@@ -7,5 +7,13 @@
   },
   "headwind.runOnSave": false,
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "cSpell.words": ["Badass"]
+  "cSpell.words": [
+    "Badass",
+    "browserconfig",
+    "msapplication",
+    "opengraph",
+    "Pokelawls",
+    "pokilawls",
+    "SVGR"
+  ]
 }
