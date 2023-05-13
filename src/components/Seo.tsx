@@ -14,8 +14,8 @@ const defaultMeta = {
    * No need to be filled, will be populated with openGraph function
    * If you wish to use a normal image, just specify the path below
    */
-  // image: 'http://localhost:3000/api/og',
-  image: 'https://poketruth.info/api/og',
+  // image: 'http://localhost:3000/images/og.png',
+  image: 'https://poketruth.info/images/og.png',
 };
 
 type SeoProps = {

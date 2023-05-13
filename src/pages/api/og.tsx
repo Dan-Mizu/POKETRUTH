@@ -6,12 +6,12 @@ export const config = {
   runtime: 'edge',
 };
 
-const image = fetch(String(new URL('~/images/og.png', import.meta.url))).then(
-  (res) => res.arrayBuffer()
-);
+// const image = fetch(String(new URL('~/images/og.png', import.meta.url))).then(
+//   (res) => res.arrayBuffer()
+// );
 
 export default async function handler() {
-  const imageData = String(await image);
+  // const imageData = String(await image);
   return new ImageResponse(
     (
       <div
@@ -25,7 +25,7 @@ export default async function handler() {
           alignItems: 'center',
         }}
       >
-        <img src={imageData} />
+        {/* <img src={imageData} /> */}
       </div>
     ),
     {
