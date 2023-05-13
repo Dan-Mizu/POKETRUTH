@@ -1,15 +1,17 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from '@vercel/og';
 
 export const config = {
   runtime: 'edge',
 };
 
-const image = fetch(new URL('~/images/og.png', import.meta.url)).then((res) =>
-  res.arrayBuffer()
+const image = fetch(String(new URL('~/images/og.png', import.meta.url))).then(
+  (res) => res.arrayBuffer()
 );
 
 export default async function handler() {
-  const imageData = await image;
+  const imageData = String(await image);
   return new ImageResponse(
     (
       <div
