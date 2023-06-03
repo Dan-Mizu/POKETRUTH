@@ -28,7 +28,9 @@ export default function NotFoundPage() {
       <main>
         <section className='bg-black'>
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
-            <Image src={Jebaited} alt='jebaited' />
+            <a href='https://youtu.be/d1YBv2mWll0'>
+              <Image src={Jebaited} alt='jebaited' />
+            </a>
             <h1 className='mt-8 text-4xl text-white md:text-6xl'>
               YOU GOT JEBAITED
             </h1>
