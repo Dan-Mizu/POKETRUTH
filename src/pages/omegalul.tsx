@@ -18,8 +18,10 @@ export default function HomePage() {
       <main>
         <section className='bg-black'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
-            <Image src={omegalul} alt='omegalul' width={80} />
-
+            <header className='absolute top-2 flex items-center justify-center'>
+              <Image src={omegalul} alt='omegalul' width={70} />
+              <p className='text-5xl text-white'>s Per Hour</p>
+            </header>
             <BarChart />
             <footer className='absolute bottom-2 text-gray-700'></footer>
           </div>
