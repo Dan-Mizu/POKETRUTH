@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import Script from 'next/script';
 import * as React from 'react';
 
+import BackgroundMusic from '@/components/BackgroundMusic';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import Seo from '@/components/Seo';
@@ -13,18 +13,8 @@ export default function NotFoundPage() {
     <Layout>
       <Seo templateTitle='JEBAITED' />
 
-      {/* auto play music or wait for interaction */}
-      <Script id='show-banner' strategy='afterInteractive'>
-        {`document.getElementById("backgroundMusic").play().catch((error) => {
-    document.addEventListener('click', () => {
-      document.getElementById("backgroundMusic").play()
-    }, { once: true } )})`}
-      </Script>
-      <audio id='backgroundMusic' loop autoPlay defaultValue={0.25}>
-        <source src='/audio/jebaited.ogg' type='audio/ogg' />
-      </audio>
+      <BackgroundMusic src='/audio/jebaited.ogg' />
 
-      {/* visible page */}
       <main>
         <section className='bg-black'>
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>

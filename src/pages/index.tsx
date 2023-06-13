@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import Script from 'next/script';
 import * as React from 'react';
 
+import BackgroundMusic from '@/components/BackgroundMusic';
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
 import UnderlineLink from '@/components/links/UnderlineLink';
@@ -22,18 +22,8 @@ export default function HomePage() {
     <Layout>
       <Seo />
 
-      {/* auto play music or wait for interaction */}
-      <Script id='show-banner' strategy='afterInteractive'>
-        {`document.getElementById("backgroundMusic").play().catch((error) => {
-    document.addEventListener('click', () => {
-      document.getElementById("backgroundMusic").play()
-    }, { once: true } )})`}
-      </Script>
-      <audio id='backgroundMusic' loop autoPlay defaultValue={0.25}>
-        <source src='/audio/blue-jeans-shit-edition.ogg' type='audio/ogg' />
-      </audio>
+      <BackgroundMusic src='/audio/blue-jeans-shit-edition.ogg' />
 
-      {/* visible page */}
       <main>
         <section className='bg-black'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
