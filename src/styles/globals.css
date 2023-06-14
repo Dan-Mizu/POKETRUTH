@@ -73,6 +73,9 @@
   body,
   .p {
     @apply font-primary text-sm md:text-base;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   /* #endregion  /**======== Typography =========== */
 

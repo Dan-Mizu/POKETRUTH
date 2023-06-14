@@ -16,9 +16,19 @@ import {
 
 const data = [
   {
+    date: 'Thursday, June 8, 2023',
+    EmoteUsage: 6359,
+    OPH: 1171.2,
+  },
+  {
+    date: 'Saturday, June 10, 2023',
+    EmoteUsage: 1992,
+    OPH: 199.2793297798632,
+  },
+  {
     date: 'Sunday, June 11, 2023',
-    EmoteUsage: 4317,
-    OPH: 949.6,
+    EmoteUsage: 5412,
+    OPH: 916.16,
   },
   {
     date: 'Monday, June 12, 2023',
@@ -40,14 +50,22 @@ const CustomTooltip = ({
   if (active) {
     return (
       <div className='custom-tooltip space rounded-lg bg-blue-400 bg-opacity-95 p-5 text-lg text-white'>
-        <p className='label'>{`${label}`}</p>
+        <p className='label'>{label}</p>
+        <p className='label'>
+          {parseFloat(
+            (Number(payload?.[0].value) / Number(payload?.[1].value)).toFixed(2)
+          )}{' '}
+          Hours
+        </p>
         <hr className='mx-auto mb-3 mt-1 h-px w-48 rounded bg-white'></hr>
         <p className='label'>Total OMEGALULs</p>
-        <p className='text-gray-100'>{payload?.[0].value}</p>
+        <p className=' text-xl text-gray-100'>{payload?.[0].value}</p>
         <br />
         <p className='label'>OMEGALULs</p>
         <p className='label'>Per Hour (OPH)</p>
-        <p className='text-blue-200'>{payload?.[1].value}</p>
+        <p className='text-xl text-blue-200'>
+          {parseFloat(Number(payload?.[1].value).toFixed(2))}
+        </p>
       </div>
     );
   }
