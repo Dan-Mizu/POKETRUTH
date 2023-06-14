@@ -4,9 +4,16 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head>
-        <link
+        {/* <link
           rel='preload'
           href='/fonts/TimesNewerRoman-Bold.woff2'
+          as='font'
+          type='font/woff2'
+          crossOrigin='anonymous'
+        /> */}
+        <link
+          rel='preload'
+          href='/fonts/BienetresocialBold.woff2'
           as='font'
           type='font/woff2'
           crossOrigin='anonymous'
