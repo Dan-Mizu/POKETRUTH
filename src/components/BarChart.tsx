@@ -54,16 +54,16 @@ const CustomTooltip = ({
         <p className='label'>
           {parseFloat(
             (Number(payload?.[0].value) / Number(payload?.[1].value)).toFixed(2)
-          )}{' '}
-          Hours
+          )}
+          <text className='text-sm text-gray-300'> Hours</text>
         </p>
         <hr className='mx-auto mb-3 mt-1 h-px w-48 rounded bg-white'></hr>
-        <p className='label'>Total OMEGALULs</p>
-        <p className=' text-xl text-gray-100'>{payload?.[0].value}</p>
+        <p className='label text-sm text-gray-300'>Total OMEGALULs</p>
+        <p className='text-xl'>{payload?.[0].value}</p>
         <br />
-        <p className='label'>OMEGALULs</p>
-        <p className='label'>Per Hour (OPH)</p>
-        <p className='text-xl text-blue-200'>
+        <p className='label text-sm text-gray-300'>OMEGALULs</p>
+        <p className='label text-sm text-gray-300'>Per Hour (OPH)</p>
+        <p className='text-xl'>
           {parseFloat(Number(payload?.[1].value).toFixed(2))}
         </p>
       </div>
