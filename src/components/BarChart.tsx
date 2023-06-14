@@ -23,7 +23,7 @@ const data = [
   {
     date: 'Saturday, June 10, 2023',
     EmoteUsage: 1992,
-    OPH: 199.2793297798632,
+    OPH: 249.93,
   },
   {
     date: 'Sunday, June 11, 2023',
