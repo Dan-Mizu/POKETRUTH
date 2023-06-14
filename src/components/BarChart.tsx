@@ -1,93 +1,88 @@
+import React from 'react';
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
+  Bar,
+  ComposedChart,
+  Legend,
+  Line,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent';
 
 const data = [
   {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
+    date: 'Sunday, June 11, 2023',
+    EmoteUsage: 4317,
+    OPH: 949.6,
   },
   {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
+    date: 'Monday, June 12, 2023',
+    EmoteUsage: 11111,
+    OPH: 1960.39,
   },
   {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
+    date: 'Tuesday, June 13, 2023',
+    EmoteUsage: 10608,
+    OPH: 1547.12,
   },
 ];
 
-export default function BarChart() {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) => {
+  if (active) {
+    return (
+      <div className='custom-tooltip space rounded-lg bg-blue-400 bg-opacity-95 p-5 text-lg text-white'>
+        <p className='label'>{`${label}`}</p>
+        <hr className='mx-auto mb-3 mt-1 h-px w-48 rounded bg-white'></hr>
+        <p className='label'>Total OMEGALULs</p>
+        <p className='text-gray-100'>{payload?.[0].value}</p>
+        <br />
+        <p className='label'>OMEGALULs</p>
+        <p className='label'>Per Hour (OPH)</p>
+        <p className='text-blue-200'>{payload?.[1].value}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+export default function App() {
+  const white = '#ffffff';
+  const gray = '#bfc9c6';
+  const blue = '#0e86d4';
+
   return (
-    <AreaChart
-      width={730}
-      height={250}
+    <ComposedChart
+      width={1000}
+      height={700}
       data={data}
-      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+      margin={{
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20,
+      }}
     >
-      <defs>
-        <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-          <stop offset='5%' stopColor='#8884d8' stopOpacity={0.8} />
-          <stop offset='95%' stopColor='#8884d8' stopOpacity={0} />
-        </linearGradient>
-        <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
-          <stop offset='5%' stopColor='#82ca9d' stopOpacity={0.8} />
-          <stop offset='95%' stopColor='#82ca9d' stopOpacity={0} />
-        </linearGradient>
-      </defs>
-      <XAxis dataKey='name' />
-      <YAxis />
-      <CartesianGrid strokeDasharray='3 3' />
-      <Tooltip />
-      <Area
-        type='monotone'
-        dataKey='uv'
-        stroke='#8884d8'
-        fillOpacity={1}
-        fill='url(#colorUv)'
+      <XAxis dataKey='date' stroke={gray} />
+      <YAxis stroke={gray} />
+      <Tooltip cursor={false} content={<CustomTooltip />} />
+      <Legend />
+      <Bar
+        dataKey='EmoteUsage'
+        barSize={60}
+        fill={white}
+        radius={[15, 15, 0, 0]}
       />
-      <Area
-        type='monotone'
-        dataKey='pv'
-        stroke='#82ca9d'
-        fillOpacity={1}
-        fill='url(#colorPv)'
-      />
-    </AreaChart>
+      <Line type='natural' dataKey='OPH' stroke={blue} strokeWidth={4} />
+    </ComposedChart>
   );
 }
