@@ -14,14 +14,14 @@ import omegalul from '~/images/omegalul.webp';
 export default function HomePage() {
   return (
     <Layout>
-      <Seo />
+      <Seo templateTitle='OMEGALUL REPORT' />
 
       <CenterSection>
         {/* header */}
         <header className='absolute top-2'>
           <div className='flex items-center justify-center'>
             <Image src={omegalul} alt='omegalul' width={70} />
-            <p className='text-5xl text-white'>s Per Hour</p>
+            <p className='text-5xl text-white'>MEGALUL REPORT</p>
           </div>
         </header>
 
