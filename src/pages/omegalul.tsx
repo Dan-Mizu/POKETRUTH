@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-const BarChart = dynamic(() => import('@/components/BarChart'), { ssr: false });
+const OMEGALULChart = dynamic(() => import('@/components/OMEGALULChart'), {
+  ssr: false,
+});
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -26,7 +28,7 @@ export default function HomePage() {
         </header>
 
         {/* graph */}
-        <BarChart />
+        <OMEGALULChart />
       </CenterSection>
     </Layout>
   );

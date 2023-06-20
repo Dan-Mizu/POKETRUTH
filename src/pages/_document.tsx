@@ -13,7 +13,7 @@ export default function Document() {
         /> */}
         <link
           rel='preload'
-          href='/fonts/BienetresocialBold.woff2'
+          href='/fonts/JustBreatheBold.woff2'
           as='font'
           type='font/woff2'
           crossOrigin='anonymous'
