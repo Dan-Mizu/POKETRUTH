@@ -10,7 +10,7 @@ export default function ChromeGame() {
     <Layout>
       <Seo templateTitle='Life... is Roblox' />
       <Script src='scripts/chrome_game.js' />
-      <div className='h-[30vh] px-5' id='game'></div>
+      <div className='h-[33vh] px-4' id='game'></div>
 
       <div className='layout-l mt-5 text-left'>
         <h1
