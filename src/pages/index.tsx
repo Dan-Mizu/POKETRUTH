@@ -20,7 +20,7 @@ export default function HomePage() {
         {/* badass... */}
         <Image
           src={UhOh}
-          alt='badass'
+          alt='maketwitchgreatagain'
           width={200}
           style={{
             position: 'absolute',
