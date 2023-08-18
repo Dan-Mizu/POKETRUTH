@@ -13,7 +13,7 @@ export default function NotFoundPage() {
   return (
     <Layout>
       <Seo templateTitle='JEBAITED' />
-      <BackgroundMusic src='/audio/jebaited.ogg' />
+      <BackgroundMusic src='/audio/music/jebaited.ogg' />
 
       <CenterSection>
         {/* icon */}

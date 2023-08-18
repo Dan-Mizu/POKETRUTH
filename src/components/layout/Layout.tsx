@@ -15,3 +15,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </>
   );
 }
+
+export function LayoutWhite({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      {/* set background */}
+      <div className='bg-white'>
+        {/* page's content */}
+        <main>{children}</main>
+        {/* footer */}
+        <Footer />
+      </div>
+    </>
+  );
+}

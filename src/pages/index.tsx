@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <Layout>
       <Seo />
-      <BackgroundMusic src='/audio/blue-jeans-shit-edition.ogg' />
+      <BackgroundMusic src='/audio/music/blue-jeans-shit-edition.ogg' />
 
       <CenterSection>
         {/* badass... */}
