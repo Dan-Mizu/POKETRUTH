@@ -1,0 +1,10 @@
+{
+    "custom": {
+        "families": [
+            "Press Start 2P"
+        ],
+        "urls": [
+            "./site/style/main.css"
+        ]
+    }
+}

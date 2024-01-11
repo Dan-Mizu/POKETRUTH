@@ -1,33 +1,10 @@
 {
-  "css.validate": false,
-  "editor.formatOnSave": true,
-  "editor.tabSize": 2,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  },
-  "headwind.runOnSave": false,
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "cSpell.words": [
-    "Badass",
-    "browserconfig",
-    "clsx",
-    "clsxm",
-    "commitlint",
-    "endregion",
-    "Jebaited",
-    "MEGALUL",
-    "msapplication",
-    "newtab",
-    "omegalul",
-    "opengraph",
-    "Pokelawls",
-    "poketruth",
-    "pokilawls",
-    "postbuild",
-    "Roblox",
-    "SVGR",
-    "tailwindcss",
-    "typecheck",
-    "webp"
-  ]
+    "cSpell.words": [
+        "nuxt",
+        "nuxtjs",
+        "Pokelawls",
+        "poketruth",
+        "tailwindcss",
+        "wght"
+    ]
 }
