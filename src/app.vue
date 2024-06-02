@@ -12,8 +12,7 @@
 } */
 
 body {
-	font-family: "Anonymous Pro";
-	@apply bg-black text-lime-500;
+	@apply bg-black text-white;
 }
 
 /* hidden scrollbar */
