@@ -25,23 +25,25 @@ export default defineNuxtConfig({
 			],
 		},
 	},
-	devtools: { enabled: true },
+
 	srcDir: "src",
+
 	components: [
 		{
 			path: "~/components", // will get any components nested in let's say /components/test too
 			pathPrefix: false,
 		},
 	],
+
 	modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts"],
+
 	googleFonts: {
-		preload: true,
-		prefetch: true,
+		base64: true,
 		families: {
-			"Anonymous Pro": {
-				wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-				ital: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-			},
+			"Anonymous Pro": true,
+			Underdog: true,
 		},
 	},
+
+	devtools: { enabled: true },
 });
