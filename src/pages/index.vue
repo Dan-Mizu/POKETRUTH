@@ -8,15 +8,19 @@ if (process.client) {
 </script>
 
 <template>
+	<!-- Music -->
+	<BackgroundMusic music="/audio/music/raining_tacos.ogg" />
+
+	<!-- Content -->
 	<div
 		class="flex justify-center items-center h-screen flex-col gap-y-20 font-underdog"
 	>
-		<!-- heading -->
 		<div class="text-center flex flex-col gap-y-8">
-			<!-- text -->
+			<!-- Heading -->
 			<p class="text-5xl font-bold">the xX G SPOTTERS Xx waz here</p>
+
+			<!-- Image -->
 			<button @click="skull?.play()">
-				<!-- image -->
 				<img
 					src="/images/gspotters.webp"
 					class="w-full"

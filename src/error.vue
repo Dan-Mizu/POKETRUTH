@@ -1,28 +1,7 @@
-<script setup lang="ts">
-if (process.client) {
-	(document.getElementById("backgroundMusic") as HTMLAudioElement)
-		.play()
-		.catch((_error) => {
-			document.addEventListener(
-				"click",
-				() => {
-					(
-						document.getElementById(
-							"backgroundMusic"
-						) as HTMLAudioElement
-					).play();
-				},
-				{ once: true }
-			);
-		});
-}
-</script>
-
+import BackgroundMusic from './components/BackgroundMusic.vue';
 <template>
 	<!-- Music -->
-	<audio id="backgroundMusic" loop autoPlay defaultValue="{0.25}">
-		<source src="/audio/music/jebaited.ogg" type="audio/ogg" />
-	</audio>
+	<BackgroundMusic music="/audio/music/jebaited.ogg" />
 
 	<!-- Content -->
 	<div class="flex flex-col h-screen justify-center items-center gap-y-4">
