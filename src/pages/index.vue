@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // register sound
 import skullSound from "~/assets/audio/sfx/skull.ogg";
-let skull: HTMLAudioElement;
+let skull: Ref<HTMLAudioElement | null> = ref(null);
 if (process.client) {
-	skull = new Audio(skullSound);
+	skull.value = new Audio(skullSound);
 }
 </script>
 
@@ -15,12 +15,14 @@ if (process.client) {
 		<div class="text-center flex flex-col gap-y-8">
 			<!-- text -->
 			<p class="text-5xl font-bold">the xX G SPOTTERS Xx waz here</p>
-			<ClientOnly>
-				<button @click="skull.play()">
-					<!-- image -->
-					<img src="/images/gspotters.webp" class="w-full" draggable="false" />
-				</button>
-			</ClientOnly>
+			<button @click="skull?.play()">
+				<!-- image -->
+				<img
+					src="/images/gspotters.webp"
+					class="w-full"
+					draggable="false"
+				/>
+			</button>
 		</div>
 	</div>
 </template>
