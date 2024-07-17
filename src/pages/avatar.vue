@@ -93,6 +93,10 @@ const eyes = ["normal", "happy", "sad", "sassy"];
 			<!-- Accessories -->
 			<div class="flex gap-1 flex-wrap">
 				<div
+					class="bg-gray-600 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80"
+					@click="() => (equippedItem = '')"
+				/>
+				<div
 					v-for="(item, key) in items"
 					class="bg-gray-600 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80"
 					@click="() => (equippedItem = key)"
