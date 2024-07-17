@@ -46,10 +46,8 @@ const gradientSaturation = ref(
 );
 
 // update
-const updateColor = () => {
-	console.log("update");
+const updateColor = () =>
 	emit("colorChanged", hslToHex(h.value, s.value, l.value - 50));
-};
 // init
 const initColor = () => {
 	let hsl = hexToHsl(props.color);
