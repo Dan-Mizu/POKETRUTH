@@ -46,9 +46,10 @@ const gradientSaturation = ref(
 );
 
 // update
-const updateColor = () =>
+const updateColor = () => {
+	console.log("update");
 	emit("colorChanged", hslToHex(h.value, s.value, l.value - 50));
-
+};
 // init
 const initColor = () => {
 	let hsl = hexToHsl(props.color);
@@ -71,7 +72,7 @@ initColor();
 				min="0"
 				max="359"
 				v-model="h"
-				@click="updateColor"
+				@input="updateColor"
 			/>
 		</div>
 
@@ -86,7 +87,7 @@ initColor();
 				min="0"
 				max="100"
 				v-model="s"
-				@click="updateColor"
+				@input="updateColor"
 			/>
 		</div>
 	</div>
