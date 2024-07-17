@@ -11,16 +11,16 @@ export default defineNuxtConfig({
 				},
 				{
 					rel: "manifest",
-					href: "favicons/site.webmanifest",
+					href: "/favicons/site.webmanifest",
 				},
 				{
 					rel: "mask-icon",
 					color: "#000000",
-					href: "favicons/safari-pinned-tab.svg",
+					href: "/favicons/safari-pinned-tab.svg",
 				},
 				{
 					rel: "shortcut icon",
-					href: "favicons/favicon.ico",
+					href: "/favicons/favicon.ico",
 				},
 			],
 		},
@@ -46,4 +46,5 @@ export default defineNuxtConfig({
 	},
 
 	devtools: { enabled: true },
+	compatibilityDate: "2024-07-16",
 });
