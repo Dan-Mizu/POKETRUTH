@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 		},
 	],
 
-	modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts"],
+	modules: ["@nuxt/ui", "@nuxtjs/google-fonts"],
 
 	googleFonts: {
 		base64: true,
