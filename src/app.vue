@@ -1,5 +1,9 @@
 <template>
+	<!-- Main Page -->
 	<NuxtPage />
+
+	<!-- Nuxt UI Notifications -->
+	<UNotifications />
 </template>
 
 <style>

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+// notifications
+const toast = useToast();
+
+import type { NuxtError } from "#app";
 // data
 import items from "assets/data/items.json";
 const eyes = ["normal", "happy", "sad", "sassy"];
@@ -13,6 +17,9 @@ const accessory: Ref<string> = ref("");
 let accessToken: Ref<string> = ref("");
 let avatar_state: Ref<"loading" | "loaded"> = ref("loading");
 let save_state: Ref<"saving" | "no_changes" | "saveable"> = ref("no_changes");
+let active: ComputedRef<boolean> = computed(() => {
+	return avatar_state.value == "loaded" && save_state.value != "saving";
+});
 
 // get route query (if redirected back from authenticating with twitch)
 const query = useRoute().query;
@@ -51,6 +58,13 @@ onMounted(async () => {
 						color.value = integerToHex(
 							avatarData.value.character.color
 						);
+
+					// notification
+					toast.add({
+						title: "Loaded avatar.",
+						icon: "i-heroicons-check-circle-20-solid",
+						color: "green",
+					});
 				}
 
 				// watch for changes
@@ -80,7 +94,26 @@ const updateCharacter = async () => {
 				color: hexToInteger(color.value),
 			},
 		},
-	});
+	})
+		// success
+		.then(() => {
+			// notification
+			toast.add({
+				title: "Successfully saved avatar.",
+				icon: "i-heroicons-check-circle-20-solid",
+				color: "green",
+			});
+		})
+		// failed
+		.catch((error: NuxtError) => {
+			if (error.statusCode != 201)
+				// notification
+				toast.add({
+					title: "Failed to save avatar.",
+					icon: "i-heroicons-x-circle-20-solid",
+					color: "red",
+				});
+		});
 
 	// change state
 	save_state.value = "no_changes";
@@ -213,6 +246,7 @@ const updateCharacter = async () => {
 			<ColorPickerHSL
 				:color="color"
 				@colorChanged="(newColor: string) => (color = newColor)"
+				:disabled="!active"
 			/>
 		</div>
 
@@ -224,7 +258,10 @@ const updateCharacter = async () => {
 			<div class="flex gap-1 flex-wrap">
 				<div
 					v-for="eye in eyes"
-					class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+					:class="[
+						'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+						!active ? ' pointer-events-none opacity-20' : '',
+					]"
 					@click="() => (eye_type = eye)"
 				>
 					<img :src="`/avatar/eyes/UI/${eye}.png`" />
@@ -237,13 +274,19 @@ const updateCharacter = async () => {
 				<template v-if="!avatarData">
 					<!-- No Accessory Option -->
 					<div
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = '')"
 					/>
 
 					<div
 						v-for="(item, key) in items"
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = key)"
 					>
 						<img :src="`/avatar/accessories/UI/${key}.png`" />
@@ -256,13 +299,19 @@ const updateCharacter = async () => {
 				>
 					<!-- No Accessory Option -->
 					<div
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = '')"
 					/>
 
 					<div
 						v-for="(item, key) in avatarData.inventory.accessory"
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = key as string)"
 					>
 						<img :src="`/avatar/accessories/UI/${key}.png`" />

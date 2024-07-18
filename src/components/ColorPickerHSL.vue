@@ -2,6 +2,7 @@
 // props
 const props = defineProps<{
 	color: string;
+	disabled: boolean;
 }>();
 
 // state
@@ -61,7 +62,10 @@ initColor();
 	<div class="flex flex-col gap-y-2 justify-center items-center">
 		<!-- Hue -->
 		<div
-			class="w-full h-5 rounded-full border border-text-color"
+			:class="[
+				'w-full h-5 rounded-full border border-text-color',
+				disabled ? 'border-gray-600' : '',
+			]"
 			:style="gradientHue"
 		>
 			<input
@@ -71,12 +75,16 @@ initColor();
 				max="359"
 				v-model="h"
 				@input="updateColor"
+				:disabled="disabled"
 			/>
 		</div>
 
 		<!-- Saturation -->
 		<div
-			class="w-full h-5 rounded-full border border-text-color"
+			:class="[
+				'w-full h-5 rounded-full border border-text-color',
+				disabled ? 'border-gray-600' : '',
+			]"
 			:style="gradientSaturation"
 		>
 			<input
@@ -86,6 +94,7 @@ initColor();
 				max="100"
 				v-model="s"
 				@input="updateColor"
+				:disabled="disabled"
 			/>
 		</div>
 	</div>

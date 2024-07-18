@@ -42,5 +42,13 @@ export default defineAppConfig({
 				xl: "p-2",
 			},
 		},
+
+		// notification settings
+		notifications: {
+			// smaller notification width
+			width: "w-[25%]",
+			// show toasts at the top right of the screen
+			position: "top-0 bottom-auto",
+		},
 	},
 });
