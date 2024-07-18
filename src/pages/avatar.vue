@@ -13,6 +13,9 @@ const accessory: Ref<string> = ref("");
 let accessToken: Ref<string> = ref("");
 let avatar_state: Ref<"loading" | "loaded"> = ref("loading");
 let save_state: Ref<"saving" | "no_changes" | "saveable"> = ref("no_changes");
+let active: ComputedRef<boolean> = computed(() => {
+	return avatar_state.value == "loaded" && save_state.value != "saving";
+});
 
 // get route query (if redirected back from authenticating with twitch)
 const query = useRoute().query;
@@ -213,6 +216,7 @@ const updateCharacter = async () => {
 			<ColorPickerHSL
 				:color="color"
 				@colorChanged="(newColor: string) => (color = newColor)"
+				:disabled="!active"
 			/>
 		</div>
 
@@ -224,7 +228,10 @@ const updateCharacter = async () => {
 			<div class="flex gap-1 flex-wrap">
 				<div
 					v-for="eye in eyes"
-					class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+					:class="[
+						'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+						!active ? ' pointer-events-none opacity-20' : '',
+					]"
 					@click="() => (eye_type = eye)"
 				>
 					<img :src="`/avatar/eyes/UI/${eye}.png`" />
@@ -237,13 +244,19 @@ const updateCharacter = async () => {
 				<template v-if="!avatarData">
 					<!-- No Accessory Option -->
 					<div
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = '')"
 					/>
 
 					<div
 						v-for="(item, key) in items"
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = key)"
 					>
 						<img :src="`/avatar/accessories/UI/${key}.png`" />
@@ -256,13 +269,19 @@ const updateCharacter = async () => {
 				>
 					<!-- No Accessory Option -->
 					<div
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = '')"
 					/>
 
 					<div
 						v-for="(item, key) in avatarData.inventory.accessory"
-						class="bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
 						@click="() => (accessory = key as string)"
 					>
 						<img :src="`/avatar/accessories/UI/${key}.png`" />
