@@ -1,4 +1,3 @@
-// It will be available as randomEntry() (camelCase of file name without extension)
 export default function (h: number, s: number, b: number) {
 	const hsl = {
 		h: h,
