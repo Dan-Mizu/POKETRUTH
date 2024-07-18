@@ -1,5 +1,16 @@
 {
 	"name": "poketruth-site",
+	"version": "0.0.1",
+	"author": {
+		"name": "DanMizu",
+		"email": "dan@danmizu.dev",
+		"url": "https://danmizu.dev"
+	},
+	"license": "GPL-3.0-or-later",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Dan-Mizu/POKETRUTH"
+	},
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -10,10 +21,15 @@
 		"postinstall": "nuxt prepare"
 	},
 	"devDependencies": {
+		"@iconify-json/simple-icons": "^1.1.109",
+		"@nuxt/icon": "^1.1.1",
 		"@nuxt/ui": "^2.17.0",
 		"@nuxtjs/google-fonts": "^3.2.0",
 		"nuxt": "^3.12.3",
 		"vue": "^3.4.31",
 		"vue-router": "^4.4.0"
+	},
+	"dependencies": {
+		"firebase-admin": "^12.2.0"
 	}
 }

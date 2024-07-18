@@ -1,4 +1,3 @@
-// It will be available as randomEntry() (camelCase of file name without extension)
 export default function (h: number, s: number, l: number) {
 	s /= 100;
 	l /= 100;

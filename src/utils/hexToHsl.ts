@@ -1,4 +1,3 @@
-// It will be available as randomEntry() (camelCase of file name without extension)
 export default function (hex: string) {
 	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
 		hex

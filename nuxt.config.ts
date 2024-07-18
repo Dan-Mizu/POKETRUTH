@@ -1,3 +1,5 @@
+import { name, version, author } from "./package.json";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	app: {
@@ -26,7 +28,21 @@ export default defineNuxtConfig({
 		},
 	},
 
+	runtimeConfig: {
+		firebaseClientEmail: "",
+		firebasePrivateKey: "",
+		firebaseProjectId: "",
+		firebaseDatabaseUrl: "",
+		twitchAppClientSecret: "",
+		public: {
+			twitchAppClientId: "",
+			version,
+			userAgent: `${name}/${version} (${author.email})`,
+		},
+	},
+
 	srcDir: "src",
+	serverDir: "server",
 
 	components: [
 		{
@@ -35,7 +51,7 @@ export default defineNuxtConfig({
 		},
 	],
 
-	modules: ["@nuxt/ui", "@nuxtjs/google-fonts"],
+	modules: ["@nuxt/ui", "@nuxtjs/google-fonts", "@nuxt/icon"],
 
 	googleFonts: {
 		base64: true,
@@ -43,6 +59,10 @@ export default defineNuxtConfig({
 			"Anonymous Pro": true,
 			Underdog: true,
 		},
+	},
+
+	icon: {
+		componentName: "NuxtIcon",
 	},
 
 	devtools: { enabled: true },
