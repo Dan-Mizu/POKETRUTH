@@ -39,7 +39,6 @@ export default function (hex: string) {
 	l = Math.round(l);
 	h = Math.round(360 * (h as number));
 
-	// return "hsl(" + h + ", " + s + "%, " + l + "%)";
 	return {
 		h,
 		s,

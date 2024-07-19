@@ -8,24 +8,18 @@ const props = defineProps<{
 // state
 const h = ref(265);
 const s = ref(100);
-const l = ref(100);
+const l = ref(50);
 
 // events
 const emit = defineEmits(["colorChanged"]);
 
 // computed
-const colorHSL = ref(
-	computed(() => {
-		const hsl = hsbToHsl(h.value / 360, s.value / 100, l.value / 100);
-		return `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-	})
-);
 const gradientHue = ref(
 	computed(() => {
 		const stops = [];
 		for (let i = 0; i < 7; i++) {
 			const hue = i * 60;
-			const hsl = hsbToHsl(hue / 360, s.value / 100, l.value / 100);
+			const hsl = hsbToHsl(hue / 360, s.value / 100, l.value / 50);
 			stops.push(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`);
 		}
 		return {
@@ -36,8 +30,8 @@ const gradientHue = ref(
 const gradientSaturation = ref(
 	computed(() => {
 		const stops = [];
-		const hsl1 = hsbToHsl(h.value / 360, 0, l.value / 100);
-		const hsl2 = hsbToHsl(h.value / 360, 1, l.value / 100);
+		const hsl1 = hsbToHsl(h.value / 360, 0, l.value / 50);
+		const hsl2 = hsbToHsl(h.value / 360, 1, l.value / 50);
 		stops.push(`hsl(${hsl1.h}, ${hsl1.s}%, ${hsl1.l}%)`);
 		stops.push(`hsl(${hsl2.h}, ${hsl2.s}%, ${hsl2.l}%)`);
 		return {
@@ -48,7 +42,7 @@ const gradientSaturation = ref(
 
 // update
 const updateColor = () =>
-	emit("colorChanged", hslToHex(h.value, s.value, l.value - 50));
+	emit("colorChanged", hslToHex(h.value, s.value, l.value));
 // init
 const initColor = () => {
 	let hsl = hexToHsl(props.color);

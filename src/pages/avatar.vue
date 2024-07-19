@@ -186,218 +186,231 @@ const updateCharacter = async () => {
 </script>
 
 <template>
+	<!-- Main -->
 	<div
-		class="flex flex-col gap-y-5 justify-center items-center h-screen w-screen"
+		class="w-screen flex items-start justify-center overflow-y-scroll overflow-x-hidden"
 	>
-		<!-- Avatar -->
+		<!-- Content -->
 		<div
-			v-if="avatar_state == 'loaded'"
-			class="relative flex items-end justify-center w-[449px] h-[342px]"
+			class="flex flex-col gap-y-5 justify-center items-center h-full w-[449px] pb-10"
 		>
-			<!-- Accessories -->
-			<div class="absolute">
-				<div
-					class="select-none pointer-events-none relative w-[449px] h-[342px]"
-				>
-					<!-- Accessory -->
-					<img
-						v-if="accessory"
-						:src="`/avatar/accessories/2.5x/${accessory}.png`"
-						class="absolute z-[3]"
-						draggable="false"
-					/>
-				</div>
-			</div>
-
-			<!-- Body -->
-			<div class="absolute">
-				<div
-					class="select-none pointer-events-none relative w-[320px] h-[232px]"
-				>
-					<!-- Belly -->
-					<img
-						src="/avatar/body/2.5x/Non-Tintable.png"
-						class="absolute z-[1]"
-						draggable="false"
-					/>
-
-					<!-- Eyes -->
-					<img
-						:src="`/avatar/eyes/2.5x/${eye_type}.png`"
-						class="absolute z-[2]"
-						draggable="false"
-					/>
-
-					<!-- Tintable Skin -->
+			<!-- Avatar -->
+			<div
+				v-if="avatar_state == 'loaded'"
+				class="relative flex items-end justify-center w-full h-[342px]"
+			>
+				<!-- Accessories -->
+				<div class="absolute">
 					<div
-						class="text-[320px] overflow-hidden relative select-none z-0"
+						class="select-none pointer-events-none relative w-full h-[342px]"
 					>
-						<!-- Tint -->
+						<!-- Accessory -->
+						<img
+							v-if="accessory"
+							:src="`/avatar/accessories/2.5x/${accessory}.png`"
+							class="absolute z-[3]"
+							draggable="false"
+						/>
+					</div>
+				</div>
+
+				<!-- Body -->
+				<div class="absolute">
+					<div
+						class="select-none pointer-events-none relative w-[320px] h-[232px]"
+					>
+						<!-- Belly -->
+						<img
+							src="/avatar/body/2.5x/Non-Tintable.png"
+							class="absolute z-[1]"
+							draggable="false"
+						/>
+
+						<!-- Eyes -->
+						<img
+							:src="`/avatar/eyes/2.5x/${eye_type}.png`"
+							class="absolute z-[2]"
+							draggable="false"
+						/>
+
+						<!-- Tintable Skin -->
 						<div
-							class="absolute left-[-1em] opacity-50"
-							:style="{
-								filter: 'drop-shadow(1em 0 0px ' + color + ')',
-							}"
+							class="text-[320px] overflow-hidden relative select-none z-0"
 						>
+							<!-- Tint -->
+							<div
+								class="absolute left-[-1em] mix-blend-multiply"
+								:style="{
+									filter:
+										'drop-shadow(1em 0 0px ' + color + ')',
+								}"
+							>
+								<img
+									src="/avatar/body/2.5x/Tintable.png"
+									draggable="false"
+								/>
+							</div>
+
+							<!-- Base -->
 							<img
 								src="/avatar/body/2.5x/Tintable.png"
 								draggable="false"
 							/>
 						</div>
-
-						<!-- Base -->
-						<img
-							src="/avatar/body/2.5x/Tintable.png"
-							draggable="false"
-						/>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Loading Avatar -->
-		<div
-			v-else
-			class="flex items-center justify-center w-[449px] h-[342px]"
-		>
-			<img src="/images/ppCircle.webp" draggable="false" />
-		</div>
-
-		<!-- Twitch Integration -->
-		<UButton
-			v-if="!avatarData && !readonly_mode"
-			color="purple"
-			rounded
-			:disabled="avatar_state != 'loaded'"
-			:to="
-				avatar_state == 'loaded'
-					? 'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=' +
-					  useRuntimeConfig().public.twitchAppClientId +
-					  '&redirect_uri=' +
-					  useRequestURL().origin +
-					  '/avatar'
-					: undefined
-			"
-		>
-			<span
-				class="text-white text-center text-lg flex items-center justify-center gap-x-2"
-			>
-				<NuxtIcon name="simple-icons:twitch" />
-				<span>Sign In To Twitch</span>
-			</span>
-		</UButton>
-
-		<!-- Logged In -->
-		<div
-			v-else-if="avatarData"
-			class="flex flex-col items-center justify-center gap-y-2"
-		>
-			<!-- Name -->
-			<span class="text-white text-2xl">
-				{{ avatarData.display_name }}
-			</span>
-
-			<!-- Save Avatar Changes -->
-			<div v-if="!readonly_mode">
-				<UButton
-					color="green"
-					label="Save"
-					:disabled="save_state != 'saveable'"
-					:loading="save_state == 'saving'"
-					@click="updateCharacter"
-				/>
-			</div>
-		</div>
-
-		<!-- Options -->
-		<template v-if="!readonly_mode">
-			<!-- Color Picker -->
-			<div>
-				<ColorPickerHSL
-					:color="color"
-					@colorChanged="(newColor: string) => (color = newColor)"
-					:disabled="!active"
-				/>
-			</div>
-
-			<!-- Cosmetics -->
+			<!-- Loading Avatar -->
 			<div
-				class="flex flex-col gap-y-4 px-10 w-full items-center justify-center"
+				v-else
+				class="flex items-center justify-center w-full h-[342px]"
 			>
-				<!-- Eye Types -->
-				<div class="flex gap-1 flex-wrap">
-					<div
-						v-for="eye in eyes"
-						:class="[
-							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-							!active ? ' pointer-events-none opacity-20' : '',
-						]"
-						@click="() => (eye_type = eye)"
-					>
-						<img :src="`/avatar/eyes/UI/${eye}.png`" />
-					</div>
-				</div>
+				<img src="/images/ppCircle.webp" draggable="false" />
+			</div>
 
-				<!-- Accessories -->
-				<div class="flex gap-1 flex-wrap">
-					<!-- All Accessories -->
-					<template v-if="!avatarData">
-						<!-- No Accessory Option -->
-						<div
-							:class="[
-								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-								!active
-									? ' pointer-events-none opacity-20'
-									: '',
-							]"
-							@click="() => (accessory = '')"
-						/>
+			<!-- Twitch Integration -->
+			<UButton
+				v-if="!avatarData && !readonly_mode"
+				color="purple"
+				rounded
+				:disabled="avatar_state != 'loaded'"
+				:to="
+					avatar_state == 'loaded'
+						? 'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=' +
+						  useRuntimeConfig().public.twitchAppClientId +
+						  '&redirect_uri=' +
+						  useRequestURL().origin +
+						  '/avatar'
+						: undefined
+				"
+			>
+				<span
+					class="text-white text-center text-lg flex items-center justify-center gap-x-2"
+				>
+					<NuxtIcon name="simple-icons:twitch" />
+					<span>Sign In To Twitch</span>
+				</span>
+			</UButton>
 
-						<div
-							v-for="(item, key) in items"
-							:class="[
-								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-								!active
-									? ' pointer-events-none opacity-20'
-									: '',
-							]"
-							@click="() => (accessory = key)"
-						>
-							<img :src="`/avatar/accessories/UI/${key}.png`" />
-						</div>
-					</template>
+			<!-- Logged In -->
+			<div
+				v-else-if="avatarData"
+				class="flex flex-col items-center justify-center gap-y-2"
+			>
+				<!-- Name -->
+				<span class="text-white text-2xl">
+					{{ avatarData.display_name }}
+				</span>
 
-					<!-- Owned Accessories -->
-					<template
-						v-else-if="avatarData.inventory && avatarData.inventory.accessory && Object.keys(avatarData.inventory.accessory as Object).length > 0"
-					>
-						<!-- No Accessory Option -->
-						<div
-							:class="[
-								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-								!active
-									? ' pointer-events-none opacity-20'
-									: '',
-							]"
-							@click="() => (accessory = '')"
-						/>
-
-						<div
-							v-for="(item, key) in avatarData.inventory
-								.accessory"
-							:class="[
-								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-								!active
-									? ' pointer-events-none opacity-20'
-									: '',
-							]"
-							@click="() => (accessory = key as string)"
-						>
-							<img :src="`/avatar/accessories/UI/${key}.png`" />
-						</div>
-					</template>
+				<!-- Save Avatar Changes -->
+				<div v-if="!readonly_mode">
+					<UButton
+						color="green"
+						label="Save"
+						:disabled="save_state != 'saveable'"
+						:loading="save_state == 'saving'"
+						@click="updateCharacter"
+					/>
 				</div>
 			</div>
-		</template>
+
+			<!-- Options -->
+			<template v-if="!readonly_mode">
+				<!-- Color Picker -->
+				<div>
+					<ColorPickerHSL
+						:color="color"
+						@colorChanged="(newColor: string) => (color = newColor)"
+						:disabled="!active"
+					/>
+				</div>
+
+				<!-- Cosmetics -->
+				<div
+					class="flex flex-col gap-y-4 w-full items-center justify-center"
+				>
+					<!-- Eye Types -->
+					<div class="flex gap-1 flex-wrap justify-center">
+						<div
+							v-for="eye in eyes"
+							:class="[
+								'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
+								!active
+									? ' pointer-events-none opacity-20'
+									: '',
+							]"
+							@click="() => (eye_type = eye)"
+						>
+							<img :src="`/avatar/eyes/UI/${eye}.png`" />
+						</div>
+					</div>
+
+					<!-- Accessories -->
+					<div class="flex gap-1 flex-wrap justify-center">
+						<!-- All Accessories -->
+						<template v-if="!avatarData">
+							<!-- No Accessory Option -->
+							<div
+								:class="[
+									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
+									!active
+										? ' pointer-events-none opacity-20'
+										: '',
+								]"
+								@click="() => (accessory = '')"
+							/>
+
+							<div
+								v-for="(item, key) in items"
+								:class="[
+									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
+									!active
+										? ' pointer-events-none opacity-20'
+										: '',
+								]"
+								@click="() => (accessory = key)"
+							>
+								<img
+									:src="`/avatar/accessories/UI/${key}.png`"
+								/>
+							</div>
+						</template>
+
+						<!-- Owned Accessories -->
+						<template
+							v-else-if="avatarData.inventory && avatarData.inventory.accessory && Object.keys(avatarData.inventory.accessory as Object).length > 0"
+						>
+							<!-- No Accessory Option -->
+							<div
+								:class="[
+									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
+									!active
+										? ' pointer-events-none opacity-20'
+										: '',
+								]"
+								@click="() => (accessory = '')"
+							/>
+
+							<div
+								v-for="(item, key) in avatarData.inventory
+									.accessory"
+								:class="[
+									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
+									!active
+										? ' pointer-events-none opacity-20'
+										: '',
+								]"
+								@click="() => (accessory = key as string)"
+							>
+								<img
+									:src="`/avatar/accessories/UI/${key}.png`"
+								/>
+							</div>
+						</template>
+					</div>
+				</div>
+			</template>
+		</div>
 	</div>
 </template>
