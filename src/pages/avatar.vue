@@ -65,6 +65,16 @@ onMounted(async () => {
 					if (response.statusCode == 500) {
 						// default avatar
 						avatarLoaded = null;
+
+						// notification
+						toast.add({
+							title: "No frog found for this user",
+							icon: "i-heroicons-x-circle-20-solid",
+							color: "red",
+							ui: {
+								background: "bg-white dark:bg-gray-950",
+							},
+						});
 					}
 					// success
 					else avatarLoaded = true;
@@ -128,15 +138,21 @@ onMounted(async () => {
 	// notification
 	if (avatarLoaded)
 		toast.add({
-			title: "Loaded avatar",
+			title: "Loaded frog",
 			icon: "i-heroicons-check-circle-20-solid",
 			color: "green",
+			ui: {
+				background: "bg-white dark:bg-gray-950",
+			},
 		});
 	else if (avatarLoaded !== null)
 		toast.add({
-			title: "Failed to load avatar",
+			title: "Failed to load frog",
 			icon: "i-heroicons-x-circle-20-solid",
 			color: "red",
+			ui: {
+				background: "bg-white dark:bg-gray-950",
+			},
 		});
 
 	// loaded
@@ -164,9 +180,12 @@ const updateCharacter = async () => {
 		.then(() => {
 			// notification
 			toast.add({
-				title: "Saved avatar",
+				title: "Saved frog",
 				icon: "i-heroicons-check-circle-20-solid",
 				color: "green",
+				ui: {
+					background: "bg-white dark:bg-gray-950",
+				},
 			});
 		})
 		// failed
@@ -174,9 +193,12 @@ const updateCharacter = async () => {
 			if (error.statusCode != 201)
 				// notification
 				toast.add({
-					title: "Failed to save avatar",
+					title: "Failed to save frog",
 					icon: "i-heroicons-x-circle-20-solid",
 					color: "red",
+					ui: {
+						background: "bg-white dark:bg-gray-950",
+					},
 				});
 		});
 
@@ -188,21 +210,21 @@ const updateCharacter = async () => {
 <template>
 	<!-- Main -->
 	<div
-		class="w-screen flex items-start justify-center overflow-y-scroll overflow-x-hidden"
+		class="w-full h-full flex items-start justify-center overflow-y-scroll overflow-x-hidden"
 	>
 		<!-- Content -->
 		<div
-			class="flex flex-col gap-y-5 justify-center items-center h-full w-[449px] pb-10"
+			class="flex flex-col gap-y-5 justify-center items-center w-[449px] h-full py-10"
 		>
 			<!-- Avatar -->
 			<div
 				v-if="avatar_state == 'loaded'"
-				class="relative flex items-end justify-center w-full h-[342px]"
+				class="relative flex items-end justify-center w-[449px] h-[342px]"
 			>
 				<!-- Accessories -->
 				<div class="absolute">
 					<div
-						class="select-none pointer-events-none relative w-full h-[342px]"
+						class="select-none pointer-events-none relative w-[449px] h-[342px]"
 					>
 						<!-- Accessory -->
 						<img
