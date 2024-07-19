@@ -14,6 +14,7 @@ const eye_type: Ref<string> = ref("normal");
 const accessory: Ref<string> = ref("");
 
 // state
+let readonly_mode: Ref<boolean> = ref(false);
 let accessToken: Ref<string> = ref("");
 let avatar_state: Ref<"loading" | "loaded"> = ref("loading");
 let save_state: Ref<"saving" | "no_changes" | "saveable"> = ref("no_changes");
@@ -22,57 +23,121 @@ let active: ComputedRef<boolean> = computed(() => {
 });
 
 // get route query (if redirected back from authenticating with twitch)
-const query = useRoute().query;
+const route = useRoute();
 onMounted(async () => {
-	// check for error from twitch
-	if (!query.error) {
-		// get access token
-		if (useRoute().hash) {
-			// token
-			accessToken.value = useRoute().hash.split("&")[0].slice(14);
+	// success state for notifications
+	let avatarLoaded: boolean | null = null;
 
-			// clear hash
-			useRouter().push(useRoute().path.split("#")[0]);
-		}
+	// check for avatar query
+	if (route.params.name) {
+		// request avatar data from server
+		await $fetch("/api/avatar", {
+			query: {
+				name: route.params.name,
+			},
+		})
+			.then((response: any) => {
+				if (response) {
+					// change to readonly mode
+					readonly_mode.value = true;
 
-		// get peepo pond user data
-		if (accessToken.value)
-			await $fetch("/api/avatar", {
-				query: {
-					accessToken: accessToken.value,
-				},
-			}).then((response) => {
-				// save avatar data
-				if (response) avatarData.value = response.data;
+					// save avatar data
+					avatarData.value = response.data;
 
-				// update avatar data
-				if (avatarData.value && avatarData.value.character) {
-					if (
-						avatarData.value.inventory &&
-						avatarData.value.character.accessory
-					)
-						accessory.value = avatarData.value.character.accessory;
-					if (avatarData.value.character.eye_type)
-						eye_type.value = avatarData.value.character.eye_type;
-					if (avatarData.value.character.color)
-						color.value = integerToHex(
-							avatarData.value.character.color
-						);
+					// update avatar data
+					if (avatarData.value && avatarData.value.character) {
+						if (
+							avatarData.value.inventory &&
+							avatarData.value.character.accessory
+						)
+							accessory.value =
+								avatarData.value.character.accessory;
+						if (avatarData.value.character.eye_type)
+							eye_type.value =
+								avatarData.value.character.eye_type;
+						if (avatarData.value.character.color)
+							color.value = integerToHex(
+								avatarData.value.character.color
+							);
+					}
 
-					// notification
-					toast.add({
-						title: "Loaded avatar.",
-						icon: "i-heroicons-check-circle-20-solid",
-						color: "green",
-					});
+					// peepo pond user not found
+					if (response.statusCode == 500) {
+						// default avatar
+						avatarLoaded = null;
+					}
+					// success
+					else avatarLoaded = true;
 				}
+			})
+			.catch((error: NuxtError) => {
+				// log
+				console.log(error.statusCode, error.statusMessage);
 
-				// watch for changes
-				watch(color, () => (save_state.value = "saveable"));
-				watch(eye_type, () => (save_state.value = "saveable"));
-				watch(accessory, () => (save_state.value = "saveable"));
+				// failed
+				avatarLoaded = false;
 			});
 	}
+
+	// check for twitch api access token
+	else if (!route.query.error && route.hash) {
+		// user avatar not loaded yet
+		avatarLoaded = false;
+
+		// token
+		accessToken.value = route.hash.split("&")[0].slice(14);
+
+		// clear hash
+		useRouter().push(route.path.split("#")[0]);
+
+		// get peepo pond user data
+		await $fetch("/api/avatar", {
+			query: {
+				accessToken: accessToken.value,
+			},
+		}).then((response) => {
+			// save avatar data
+			if (response) avatarData.value = response.data;
+
+			// update avatar data
+			if (avatarData.value && avatarData.value.character) {
+				if (
+					avatarData.value.inventory &&
+					avatarData.value.character.accessory
+				)
+					accessory.value = avatarData.value.character.accessory;
+				if (avatarData.value.character.eye_type)
+					eye_type.value = avatarData.value.character.eye_type;
+				if (avatarData.value.character.color)
+					color.value = integerToHex(
+						avatarData.value.character.color
+					);
+
+				avatarLoaded = true;
+			}
+
+			// watch for changes
+			watch(color, () => (save_state.value = "saveable"));
+			watch(eye_type, () => (save_state.value = "saveable"));
+			watch(accessory, () => (save_state.value = "saveable"));
+		});
+	}
+	// twitch api error
+	else if (route.query.error) avatarLoaded = false;
+
+	// notification
+	if (avatarLoaded)
+		toast.add({
+			title: "Loaded avatar",
+			icon: "i-heroicons-check-circle-20-solid",
+			color: "green",
+		});
+	else if (avatarLoaded !== null)
+		toast.add({
+			title: "Failed to load avatar",
+			icon: "i-heroicons-x-circle-20-solid",
+			color: "red",
+		});
 
 	// loaded
 	avatar_state.value = "loaded";
@@ -99,7 +164,7 @@ const updateCharacter = async () => {
 		.then(() => {
 			// notification
 			toast.add({
-				title: "Successfully saved avatar.",
+				title: "Saved avatar",
 				icon: "i-heroicons-check-circle-20-solid",
 				color: "green",
 			});
@@ -109,7 +174,7 @@ const updateCharacter = async () => {
 			if (error.statusCode != 201)
 				// notification
 				toast.add({
-					title: "Failed to save avatar.",
+					title: "Failed to save avatar",
 					icon: "i-heroicons-x-circle-20-solid",
 					color: "red",
 				});
@@ -200,7 +265,7 @@ const updateCharacter = async () => {
 
 		<!-- Twitch Integration -->
 		<UButton
-			v-if="!avatarData"
+			v-if="!avatarData && !readonly_mode"
 			color="purple"
 			rounded
 			:disabled="avatar_state != 'loaded'"
@@ -223,14 +288,17 @@ const updateCharacter = async () => {
 		</UButton>
 
 		<!-- Logged In -->
-		<div v-else class="flex flex-col items-center justify-center gap-y-2">
+		<div
+			v-else-if="avatarData"
+			class="flex flex-col items-center justify-center gap-y-2"
+		>
 			<!-- Name -->
 			<span class="text-white text-2xl">
 				{{ avatarData.display_name }}
 			</span>
 
 			<!-- Save Avatar Changes -->
-			<div>
+			<div v-if="!readonly_mode">
 				<UButton
 					color="green"
 					label="Save"
@@ -241,83 +309,95 @@ const updateCharacter = async () => {
 			</div>
 		</div>
 
-		<!-- Color Picker -->
-		<div>
-			<ColorPickerHSL
-				:color="color"
-				@colorChanged="(newColor: string) => (color = newColor)"
-				:disabled="!active"
-			/>
-		</div>
-
 		<!-- Options -->
-		<div
-			class="flex flex-col gap-y-4 px-10 w-full items-center justify-center"
-		>
-			<!-- Eye Types -->
-			<div class="flex gap-1 flex-wrap">
-				<div
-					v-for="eye in eyes"
-					:class="[
-						'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-						!active ? ' pointer-events-none opacity-20' : '',
-					]"
-					@click="() => (eye_type = eye)"
-				>
-					<img :src="`/avatar/eyes/UI/${eye}.png`" />
+		<template v-if="!readonly_mode">
+			<!-- Color Picker -->
+			<div>
+				<ColorPickerHSL
+					:color="color"
+					@colorChanged="(newColor: string) => (color = newColor)"
+					:disabled="!active"
+				/>
+			</div>
+
+			<!-- Cosmetics -->
+			<div
+				class="flex flex-col gap-y-4 px-10 w-full items-center justify-center"
+			>
+				<!-- Eye Types -->
+				<div class="flex gap-1 flex-wrap">
+					<div
+						v-for="eye in eyes"
+						:class="[
+							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+							!active ? ' pointer-events-none opacity-20' : '',
+						]"
+						@click="() => (eye_type = eye)"
+					>
+						<img :src="`/avatar/eyes/UI/${eye}.png`" />
+					</div>
+				</div>
+
+				<!-- Accessories -->
+				<div class="flex gap-1 flex-wrap">
+					<!-- All Accessories -->
+					<template v-if="!avatarData">
+						<!-- No Accessory Option -->
+						<div
+							:class="[
+								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+								!active
+									? ' pointer-events-none opacity-20'
+									: '',
+							]"
+							@click="() => (accessory = '')"
+						/>
+
+						<div
+							v-for="(item, key) in items"
+							:class="[
+								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+								!active
+									? ' pointer-events-none opacity-20'
+									: '',
+							]"
+							@click="() => (accessory = key)"
+						>
+							<img :src="`/avatar/accessories/UI/${key}.png`" />
+						</div>
+					</template>
+
+					<!-- Owned Accessories -->
+					<template
+						v-else-if="avatarData.inventory && avatarData.inventory.accessory && Object.keys(avatarData.inventory.accessory as Object).length > 0"
+					>
+						<!-- No Accessory Option -->
+						<div
+							:class="[
+								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+								!active
+									? ' pointer-events-none opacity-20'
+									: '',
+							]"
+							@click="() => (accessory = '')"
+						/>
+
+						<div
+							v-for="(item, key) in avatarData.inventory
+								.accessory"
+							:class="[
+								'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
+								!active
+									? ' pointer-events-none opacity-20'
+									: '',
+							]"
+							@click="() => (accessory = key as string)"
+						>
+							<img :src="`/avatar/accessories/UI/${key}.png`" />
+						</div>
+					</template>
 				</div>
 			</div>
-
-			<!-- Accessories -->
-			<div class="flex gap-1 flex-wrap">
-				<!-- All Accessories -->
-				<template v-if="!avatarData">
-					<!-- No Accessory Option -->
-					<div
-						:class="[
-							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-							!active ? ' pointer-events-none opacity-20' : '',
-						]"
-						@click="() => (accessory = '')"
-					/>
-
-					<div
-						v-for="(item, key) in items"
-						:class="[
-							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-							!active ? ' pointer-events-none opacity-20' : '',
-						]"
-						@click="() => (accessory = key)"
-					>
-						<img :src="`/avatar/accessories/UI/${key}.png`" />
-					</div>
-				</template>
-
-				<!-- Owned Accessories -->
-				<template
-					v-else-if="avatarData.inventory && avatarData.inventory.accessory && Object.keys(avatarData.inventory.accessory as Object).length > 0"
-				>
-					<!-- No Accessory Option -->
-					<div
-						:class="[
-							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-							!active ? ' pointer-events-none opacity-20' : '',
-						]"
-						@click="() => (accessory = '')"
-					/>
-
-					<div
-						v-for="(item, key) in avatarData.inventory.accessory"
-						:class="[
-							'bg-gray-400 rounded-lg w-20 h-20 flex items-center justify-center hover:bg-opacity-80 select-none border-white border-[1px]',
-							!active ? ' pointer-events-none opacity-20' : '',
-						]"
-						@click="() => (accessory = key as string)"
-					>
-						<img :src="`/avatar/accessories/UI/${key}.png`" />
-					</div>
-				</template>
-			</div>
-		</div>
+		</template>
 	</div>
 </template>
