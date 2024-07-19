@@ -1,76 +1,143 @@
+import { ApiClient } from "@twurple/api";
 import { firebase } from "../utils/firebase";
 
 export default defineEventHandler(async (event) => {
 	// get query
-	const { accessToken } = getQuery(event);
+	const { accessToken, name } = getQuery(event);
 
-	// get twitch app client ID
-	const clientId = useRuntimeConfig().public.twitchAppClientId;
+	// get own user
+	if (accessToken) {
+		// get twitch app client ID
+		const clientId = useRuntimeConfig().public.twitchAppClientId;
 
-	// get twitch user
-	const twitchUser: ITwitchUser = await $fetch(
-		"https://api.twitch.tv/helix/users",
-		{
-			headers: {
-				Authorization: "Bearer " + accessToken,
-				"Client-Id": clientId,
-			},
-		}
-	).then((response) => {
-		// save twitch user data
-		if (response && (response as { data: any }).data)
-			return (response as { data: any }).data[0];
-	});
-
-	// no twitch user found
-	if (!twitchUser)
-		throw createError({
-			statusCode: 500,
-			statusMessage: "Unable to retrieve Twitch user.",
+		// get twitch user
+		const twitchUser: ITwitchUser = await $fetch(
+			"https://api.twitch.tv/helix/users",
+			{
+				headers: {
+					Authorization: "Bearer " + accessToken,
+					"Client-Id": clientId,
+				},
+			}
+		).then((response) => {
+			// save twitch user data
+			if (response && (response as { data: any }).data)
+				return (response as { data: any }).data[0];
 		});
 
-	// get peepo pond user
-	let pondUser: IPeepoPondUser | null = null;
-	if (twitchUser) {
-		await firebase
-			.ref(`users/${twitchUser.id}`)
-			.once("value", function (snapshot) {
-				pondUser = snapshot.val() as IPeepoPondUser;
+		// no twitch user found
+		if (!twitchUser)
+			throw createError({
+				statusCode: 500,
+				statusMessage: "Unable to retrieve Twitch user",
 			});
+
+		// get peepo pond user
+		let pondUser: IPeepoPondUser | null = null;
+		if (twitchUser) {
+			await firebase
+				.ref(`users/${twitchUser.id}`)
+				.once("value", function (snapshot) {
+					pondUser = snapshot.val() as IPeepoPondUser;
+				});
+		}
+
+		// return pond user data
+		if (pondUser && (pondUser as IPeepoPondUser).character) {
+			// format and return
+			return {
+				data: {
+					id: Number(twitchUser.id),
+					display_name: twitchUser.display_name,
+					character: (pondUser as IPeepoPondUser).character,
+					inventory: (pondUser as IPeepoPondUser).inventory,
+				},
+			} as { data: IAvatar };
+		}
+
+		// create new user
+		else {
+			// default
+			let character = {
+				color: 917248,
+				eye_type: "normal",
+			};
+
+			// update
+			var updates: { [key: string]: any } = {};
+			updates["/users/" + twitchUser.id + "/character"] = character;
+			await firebase.ref().update(updates);
+
+			return {
+				data: {
+					id: Number(twitchUser.id),
+					display_name: twitchUser.display_name,
+					character: character,
+				},
+			} as { data: IAvatar };
+		}
 	}
 
-	// return pond user data
-	if (pondUser && (pondUser as IPeepoPondUser).character) {
-		// format and return
-		return {
-			data: {
-				id: Number(twitchUser.id),
-				display_name: twitchUser.display_name,
-				character: (pondUser as IPeepoPondUser).character,
-				inventory: (pondUser as IPeepoPondUser).inventory,
-			},
-		} as { data: IAvatar };
-	}
+	// get requested user
+	else if (name) {
+		// get twitch api (twurple) client
+		const twitchAPI: ApiClient = event.context.twitchAPI;
 
-	// create new user
-	else {
-		// default
-		let character = {
-			color: 917248,
-			eye_type: "normal",
-		};
+		// failed to connect
+		if (!twitchAPI)
+			throw createError({
+				statusCode: 500,
+				statusMessage: "Unable to reach Twitch API",
+			});
 
-		// update
-		var updates: { [key: string]: any } = {};
-		updates["/users/" + twitchUser.id + "/character"] = character;
-		await firebase.ref().update(updates);
+		// get twitch user
+		const twitchUser = await twitchAPI.users.getUserByName(name as string);
 
-		return {
-			data: {
-				id: Number(twitchUser.id),
-				display_name: twitchUser.display_name,
-				character: character,
-			},
-		} as { data: IAvatar };
+		// get peepo pond user
+		let pondUser: IPeepoPondUser | null = null;
+		if (twitchUser) {
+			await firebase
+				.ref("users/" + twitchUser.id)
+				.once("value", function (snapshot) {
+					pondUser = snapshot.val() as IPeepoPondUser;
+				});
+		}
+
+		// no twitch user found
+		else
+			throw createError({
+				statusCode: 500,
+				statusMessage: "Unable to retrieve Twitch user",
+			});
+
+		// return pond user data
+		if (pondUser && (pondUser as IPeepoPondUser).character) {
+			// format and return
+			return {
+				data: {
+					id: Number(twitchUser.id),
+					display_name: twitchUser.displayName,
+					character: (pondUser as IPeepoPondUser).character,
+					inventory: (pondUser as IPeepoPondUser).inventory,
+				},
+			} as { data: IAvatar };
+		}
+
+		// no peepo pond user found
+		else {
+			// return default avatar
+			return {
+				statusCode: 500,
+				statusMessage: "Unable to retrieve Peepo Pond user",
+				data: {
+					id: Number(twitchUser.id),
+					display_name: twitchUser.displayName,
+					character: {
+						color: 917248,
+						eye_type: "normal",
+					},
+				},
+			} as { data: IAvatar; statusCode: number; statusMessage: string };
+		}
 	}
 });

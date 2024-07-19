@@ -9,8 +9,7 @@ export default defineEventHandler(async (event) => {
 	if (!newCharacter)
 		throw createError({
 			statusCode: 400,
-			statusMessage: "Bad Request",
-			data: "No new character data was supplied.",
+			statusMessage: "No new character data was supplied",
 		});
 
 	// get twitch app client ID
@@ -37,7 +36,7 @@ export default defineEventHandler(async (event) => {
 	if (!twitchUser)
 		throw createError({
 			statusCode: 500,
-			statusMessage: "Unable to retrieve Twitch user.",
+			statusMessage: "Unable to retrieve Twitch user",
 		});
 
 	// get pond user
@@ -52,7 +51,7 @@ export default defineEventHandler(async (event) => {
 	if (!pondUser)
 		throw createError({
 			statusCode: 500,
-			statusMessage: "Unable to retrieve Peepo Pond user.",
+			statusMessage: "Unable to retrieve Peepo Pond user",
 		});
 	else pondUser = pondUser as IPeepoPondUser;
 
@@ -70,7 +69,7 @@ export default defineEventHandler(async (event) => {
 		)
 			throw createError({
 				statusCode: 500,
-				statusMessage: "Failed to apply changes.",
+				statusMessage: "Failed to apply changes",
 			});
 	}
 
