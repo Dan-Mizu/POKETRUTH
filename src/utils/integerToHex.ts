@@ -1,3 +1,3 @@
 export default function (integer: number) {
-	return "#" + integer.toString(16).padStart(6, "0");
+	return "#" + integer.toString(16).toUpperCase().padStart(6, "0");
 }

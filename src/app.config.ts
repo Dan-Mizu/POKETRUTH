@@ -46,7 +46,7 @@ export default defineAppConfig({
 		// notification settings
 		notifications: {
 			// smaller notification width
-			width: "w-[25%]",
+			width: "base:w-[25%] w-full",
 			// show toasts at the top right of the screen
 			position: "top-0 bottom-auto",
 		},
