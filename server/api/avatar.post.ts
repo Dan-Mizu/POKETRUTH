@@ -1,4 +1,5 @@
 import { firebase } from "../utils/firebase";
+import isHexColor from "../utils/isHexColor";
 
 export default defineEventHandler(async (event) => {
 	// get query
@@ -74,15 +75,24 @@ export default defineEventHandler(async (event) => {
 	}
 
 	// verify color
-	let newColor = newCharacter.color as any;
-	if (newColor && !(!isNaN(parseFloat(newColor)) && !isNaN(newColor - 0)))
-		newCharacter.color = undefined;
+	let newColor = newCharacter.color as string | number | undefined;
+	if (newColor)
+		if (!(typeof newColor === "string" && isHexColor(newColor))) {
+			// convert color data from (old) integer to (new) hex code format
+			if (Number.isFinite(newColor)) {
+				newCharacter.color = integerToHex(
+					newColor as unknown as number
+				);
+			}
+			// reset color to default
+			else newCharacter.color = "#55FF00";
+		}
 
 	// final character data
 	let finalCharacter = { ...pondUser.character, ...newCharacter };
 
 	// defaults
-	if (!finalCharacter.color) finalCharacter.color = 917248;
+	if (!finalCharacter.color) finalCharacter.color = "#55FF00";
 	if (!finalCharacter.eye_type) finalCharacter.eye_type = "normal";
 
 	// update

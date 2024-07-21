@@ -1,5 +1,6 @@
 import { ApiClient } from "@twurple/api";
 import { firebase } from "../utils/firebase";
+import integerToHex from "../utils/integerToHex";
 
 export default defineEventHandler(async (event) => {
 	// get query
@@ -44,6 +45,14 @@ export default defineEventHandler(async (event) => {
 
 		// return pond user data
 		if (pondUser && (pondUser as IPeepoPondUser).character) {
+			// convert color data from (old) integer to (new) hex code format
+			if (Number.isFinite((pondUser as IPeepoPondUser).character.color)) {
+				(pondUser as IPeepoPondUser).character.color = integerToHex(
+					(pondUser as IPeepoPondUser).character
+						.color as unknown as number
+				);
+			}
+
 			// format and return
 			return {
 				data: {
@@ -59,7 +68,7 @@ export default defineEventHandler(async (event) => {
 		else {
 			// default
 			let character = {
-				color: 917248,
+				color: "#55FF00",
 				eye_type: "normal",
 			};
 
@@ -112,13 +121,23 @@ export default defineEventHandler(async (event) => {
 
 		// return pond user data
 		if (pondUser && (pondUser as IPeepoPondUser).character) {
+			// type cast
+			pondUser = pondUser as IPeepoPondUser;
+
+			// convert color data from (old) integer to (new) hex code format
+			if (Number.isFinite(pondUser.character.color)) {
+				pondUser.character.color = integerToHex(
+					pondUser.character.color as unknown as number
+				);
+			}
+
 			// format and return
 			return {
 				data: {
 					id: Number(twitchUser.id),
 					display_name: twitchUser.displayName,
-					character: (pondUser as IPeepoPondUser).character,
-					inventory: (pondUser as IPeepoPondUser).inventory,
+					character: pondUser.character,
+					inventory: pondUser.inventory,
 				},
 			} as { data: IAvatar };
 		}
@@ -133,7 +152,7 @@ export default defineEventHandler(async (event) => {
 					id: Number(twitchUser.id),
 					display_name: twitchUser.displayName,
 					character: {
-						color: 917248,
+						color: "#55FF00",
 						eye_type: "normal",
 					},
 				},

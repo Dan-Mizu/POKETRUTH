@@ -11,7 +11,7 @@ export default defineAppConfig({
 		 */
 
 		// primary color
-		gray: "shark",
+		gray: "stone",
 
 		// accent color
 		primary: "spring-green",
