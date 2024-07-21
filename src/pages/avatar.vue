@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import type { NuxtError } from "#app";
+
 // notifications
 const toast = useToast();
 
-import type { NuxtError } from "#app";
 // data
 import items from "assets/data/items.json";
 const eyes = ["normal", "happy", "sad", "sassy"];
 
 // user data
 let avatarData: Ref<IAvatar | null> = ref(null);
-const color: Ref<string> = ref("#55ff00");
+const color: Ref<string> = ref("#55FF00");
 const eye_type: Ref<string> = ref("normal");
 const accessory: Ref<string> = ref("");
 
@@ -18,7 +19,7 @@ let readonly_mode: Ref<boolean> = ref(false);
 let accessToken: Ref<string> = ref("");
 let avatar_state: Ref<"loading" | "loaded"> = ref("loading");
 let save_state: Ref<"saving" | "no_changes" | "saveable"> = ref("no_changes");
-let active: ComputedRef<boolean> = computed(() => {
+let options_active: ComputedRef<boolean> = computed(() => {
 	return avatar_state.value == "loaded" && save_state.value != "saving";
 });
 
@@ -56,9 +57,7 @@ onMounted(async () => {
 							eye_type.value =
 								avatarData.value.character.eye_type;
 						if (avatarData.value.character.color)
-							color.value = integerToHex(
-								avatarData.value.character.color
-							);
+							color.value = avatarData.value.character.color;
 					}
 
 					// peepo pond user not found
@@ -119,9 +118,7 @@ onMounted(async () => {
 				if (avatarData.value.character.eye_type)
 					eye_type.value = avatarData.value.character.eye_type;
 				if (avatarData.value.character.color)
-					color.value = integerToHex(
-						avatarData.value.character.color
-					);
+					color.value = avatarData.value.character.color;
 
 				avatarLoaded = true;
 			}
@@ -172,7 +169,7 @@ const updateCharacter = async () => {
 			character: {
 				accessory: accessory.value,
 				eye_type: eye_type.value,
-				color: hexToInteger(color.value),
+				color: color.value,
 			},
 		},
 	})
@@ -344,7 +341,7 @@ const updateCharacter = async () => {
 					<ColorPickerHSL
 						:color="color"
 						@colorChanged="(newColor: string) => (color = newColor)"
-						:disabled="!active"
+						:disabled="!options_active"
 					/>
 				</div>
 
@@ -358,7 +355,7 @@ const updateCharacter = async () => {
 							v-for="eye in eyes"
 							:class="[
 								'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
-								!active
+								!options_active
 									? ' pointer-events-none opacity-20'
 									: '',
 							]"
@@ -376,7 +373,7 @@ const updateCharacter = async () => {
 							<div
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
-									!active
+									!options_active
 										? ' pointer-events-none opacity-20'
 										: '',
 								]"
@@ -387,7 +384,7 @@ const updateCharacter = async () => {
 								v-for="(item, key) in items"
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
-									!active
+									!options_active
 										? ' pointer-events-none opacity-20'
 										: '',
 								]"
@@ -407,7 +404,7 @@ const updateCharacter = async () => {
 							<div
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
-									!active
+									!options_active
 										? ' pointer-events-none opacity-20'
 										: '',
 								]"
@@ -419,7 +416,7 @@ const updateCharacter = async () => {
 									.accessory"
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
-									!active
+									!options_active
 										? ' pointer-events-none opacity-20'
 										: '',
 								]"

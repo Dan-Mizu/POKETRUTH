@@ -34,7 +34,7 @@ interface IPeepoPondUser {
 
 interface IAvatarCharacter {
 	accessory: string | undefined;
-	color: number | undefined;
+	color: string | undefined;
 	eye_type: string | undefined;
 	nameColor: number | undefined;
 }
