@@ -91,6 +91,18 @@ export default defineEventHandler(async (event) => {
 			else newCharacter.color = "#55FF00";
 		}
 
+	// verify eyes
+	let newEyes = newCharacter.eye_type as string | undefined;
+	if (newEyes)
+		if (
+			newEyes !== "normal" &&
+			newEyes !== "happy" &&
+			newEyes !== "sad" &&
+			newEyes !== "sassy"
+		)
+			// default eye type
+			newCharacter.eye_type = "normal";
+
 	// final character data
 	let finalCharacter = { ...pondUser.character, ...newCharacter };
 
