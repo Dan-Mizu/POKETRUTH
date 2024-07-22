@@ -77,7 +77,10 @@ export default defineEventHandler(async (event) => {
 	// verify color
 	let newColor = newCharacter.color as string | number | undefined;
 	if (newColor)
-		if (!(typeof newColor === "string" && isHexColor(newColor))) {
+		if (
+			typeof newColor !== "string" &&
+			!isHexColor(newColor as unknown as string)
+		) {
 			// convert color data from (old) integer to (new) hex code format
 			if (Number.isFinite(newColor)) {
 				newCharacter.color = integerToHex(

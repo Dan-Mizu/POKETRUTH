@@ -44,5 +44,5 @@ export default function (h: number, s: number, l: number) {
 	if (gH.length == 1) gH = "0" + gH;
 	if (bH.length == 1) bH = "0" + bH;
 
-	return "#" + rH + gH + bH;
+	return ("#" + rH + gH + bH).toUpperCase();
 }
