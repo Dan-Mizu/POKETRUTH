@@ -58,14 +58,14 @@ export default defineEventHandler(async (event) => {
 
 	// verify user owns all new accessories
 	let newAccessory = newCharacter.accessory;
-	if (newAccessory && pondUser) {
+	if (newAccessory) {
 		// get inventory
 		let inventory = pondUser.inventory;
 
 		// user does not own new accessory
 		if (
-			inventory &&
-			inventory.accessory &&
+			!inventory ||
+			!inventory.accessory ||
 			!inventory.accessory[newAccessory]
 		)
 			throw createError({
@@ -112,7 +112,7 @@ export default defineEventHandler(async (event) => {
 
 	// update
 	var updates: { [key: string]: any } = {};
-	updates["/users/" + twitchUser.id + "/character"] = newCharacter;
+	updates["/users/" + twitchUser.id + "/character"] = finalCharacter;
 	await firebase
 		.ref()
 		.update(updates, () => setResponseStatus(event, 201, "Avatar Updated"));
