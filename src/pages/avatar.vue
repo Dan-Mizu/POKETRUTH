@@ -4,6 +4,11 @@ import type { NuxtError } from "#app";
 // notifications
 const toast = useToast();
 
+// runtime variables
+const {
+	public: { twitchAppClientId, cdnUrl, cdnAvatarPath },
+} = useRuntimeConfig();
+
 // data
 import items from "assets/data/items.json";
 const eyes = ["normal", "happy", "sad", "sassy"];
@@ -224,9 +229,9 @@ const updateCharacter = async () => {
 						class="select-none pointer-events-none relative w-[449px] h-[342px]"
 					>
 						<!-- Accessory -->
-						<img
+						<NuxtImg
 							v-if="accessory"
-							:src="`/avatar/accessories/2.5x/${accessory}.png`"
+							:src="`${cdnUrl}/${cdnAvatarPath}/accessory/${accessory}/5x.png`"
 							class="absolute z-[3]"
 							draggable="false"
 						/>
@@ -239,15 +244,15 @@ const updateCharacter = async () => {
 						class="select-none pointer-events-none relative w-[320px] h-[232px]"
 					>
 						<!-- Belly -->
-						<img
-							src="/avatar/body/2.5x/Non-Tintable.png"
+						<NuxtImg
+							:src="`${cdnUrl}/${cdnAvatarPath}/body/belly/5x.png`"
 							class="absolute z-[1]"
 							draggable="false"
 						/>
 
 						<!-- Eyes -->
-						<img
-							:src="`/avatar/eyes/2.5x/${eye_type}.png`"
+						<NuxtImg
+							:src="`${cdnUrl}/${cdnAvatarPath}/eyes/${eye_type}/5x.png`"
 							class="absolute z-[2]"
 							draggable="false"
 						/>
@@ -264,15 +269,15 @@ const updateCharacter = async () => {
 										'drop-shadow(1em 0 0px ' + color + ')',
 								}"
 							>
-								<img
-									src="/avatar/body/2.5x/Tintable.png"
+								<NuxtImg
+									:src="`${cdnUrl}/${cdnAvatarPath}/body/skin/5x.png`"
 									draggable="false"
 								/>
 							</div>
 
 							<!-- Base -->
-							<img
-								src="/avatar/body/2.5x/Tintable.png"
+							<NuxtImg
+								:src="`${cdnUrl}/${cdnAvatarPath}/body/skin/5x.png`"
 								draggable="false"
 							/>
 						</div>
@@ -297,7 +302,7 @@ const updateCharacter = async () => {
 				:to="
 					avatar_state == 'loaded'
 						? 'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=' +
-						  useRuntimeConfig().public.twitchAppClientId +
+						  twitchAppClientId +
 						  '&redirect_uri=' +
 						  useRequestURL().origin +
 						  '/avatar'
@@ -361,7 +366,9 @@ const updateCharacter = async () => {
 							]"
 							@click="() => (eye_type = eye)"
 						>
-							<img :src="`/avatar/eyes/UI/${eye}.png`" />
+							<NuxtImg
+								:src="`${cdnUrl}/${cdnAvatarPath}/eyes/${eye_type}/display.png`"
+							/>
 						</div>
 					</div>
 
@@ -381,7 +388,7 @@ const updateCharacter = async () => {
 							/>
 
 							<div
-								v-for="(item, key) in items"
+								v-for="(_item, key) in items"
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
 									!options_active
@@ -390,8 +397,8 @@ const updateCharacter = async () => {
 								]"
 								@click="() => (accessory = key)"
 							>
-								<img
-									:src="`/avatar/accessories/UI/${key}.png`"
+								<NuxtImg
+									:src="`${cdnUrl}/${cdnAvatarPath}/accessory/${key}/display.png`"
 								/>
 							</div>
 						</template>
@@ -412,7 +419,7 @@ const updateCharacter = async () => {
 							/>
 
 							<div
-								v-for="(item, key) in avatarData.inventory
+								v-for="(_item, key) in avatarData.inventory
 									.accessory"
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
@@ -422,8 +429,8 @@ const updateCharacter = async () => {
 								]"
 								@click="() => (accessory = key as string)"
 							>
-								<img
-									:src="`/avatar/accessories/UI/${key}.png`"
+								<NuxtImg
+									:src="`${cdnUrl}/${cdnAvatarPath}/accessory/${key}/display.png`"
 								/>
 							</div>
 						</template>
