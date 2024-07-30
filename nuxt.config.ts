@@ -35,6 +35,8 @@ export default defineNuxtConfig({
 		firebaseDatabaseUrl: "",
 		twitchAppClientSecret: "",
 		public: {
+			cdnUrl: "",
+			cdnAvatarPath: "",
 			twitchAppClientId: "",
 			version,
 			userAgent: `${name}/${version} (${author.email})`,
@@ -51,7 +53,7 @@ export default defineNuxtConfig({
 		},
 	],
 
-	modules: ["@nuxt/ui", "@nuxtjs/google-fonts", "@nuxt/icon"],
+	modules: ["@nuxt/ui", "@nuxtjs/google-fonts", "@nuxt/icon", "@nuxt/image"],
 
 	googleFonts: {
 		base64: true,
