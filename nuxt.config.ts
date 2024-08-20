@@ -25,6 +25,24 @@ export default defineNuxtConfig({
 					href: "/favicons/favicon.ico",
 				},
 			],
+
+			charset: "utf-8",
+			viewport: "width=device-width, initial-scale=1",
+
+			meta: [
+				{ property: "og:title", content: "POKE TRUTH" },
+				{ property: "description", content: "uncover the truth" },
+				{ property: "og:description", content: "uncover the truth" },
+				{ property: "twitter:card", content: "summary_large_image" },
+			],
+		},
+	},
+
+	site: {
+		indexable: false,
+		site: {
+			url: "https://poketruth.info",
+			name: "POKE TRUTH",
 		},
 	},
 
@@ -53,7 +71,13 @@ export default defineNuxtConfig({
 		},
 	],
 
-	modules: ["@nuxt/ui", "@nuxtjs/google-fonts", "@nuxt/icon", "@nuxt/image"],
+	modules: [
+		"@nuxt/ui",
+		"@nuxtjs/google-fonts",
+		"@nuxt/icon",
+		"@nuxt/image",
+		"@nuxtjs/robots",
+	],
 
 	googleFonts: {
 		base64: true,
