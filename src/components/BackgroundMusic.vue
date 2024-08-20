@@ -5,9 +5,15 @@ const props = defineProps<{
 }>();
 
 // play music
-if (process.client) {
-	(document.getElementById("backgroundMusic") as HTMLAudioElement)
-		.play()
+if (import.meta.client) {
+	// get music player
+	let music = document.getElementById("backgroundMusic") as HTMLAudioElement
+
+	// set volume
+	music.volume = 0.2
+
+	// play (and defer if not allowed to by browser)
+	music.play()
 		.catch((_error) => {
 			document.addEventListener(
 				"click",
