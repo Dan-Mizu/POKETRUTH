@@ -27,6 +27,59 @@ let save_state: Ref<"saving" | "no_changes" | "saveable"> = ref("no_changes");
 let options_active: ComputedRef<boolean> = computed(() => {
 	return avatar_state.value == "loaded" && save_state.value != "saving";
 });
+let customAvatarAccessory = ref();
+
+const userUploadedImage = async (file: File) => {
+	// check image size
+	let imgDimensions = await getImageDimensions(file);
+
+	// not correct size
+	if (!(imgDimensions.width == 449 && imgDimensions.height == 342)) {
+		// notification
+		toast.add({
+			title: "Image must be 449x342px.",
+			icon: "i-heroicons-x-circle-20-solid",
+			color: "red",
+			ui: {
+				background: "bg-white dark:bg-gray-950",
+			},
+		});
+		return;
+	}
+
+	// store custom accessory
+	customAvatarAccessory.value = URL.createObjectURL(file);
+
+	// notification
+	toast.add({
+		title: "Custom accessory applied.",
+		icon: "i-heroicons-check-circle-20-solid",
+		color: "green",
+		ui: {
+			background: "bg-white dark:bg-gray-950",
+		},
+	});
+};
+
+const getImageDimensions = async (file: File) => {
+	// init image and image url
+	var img = new Image();
+	img.src = URL.createObjectURL(file);
+
+	// decode img
+	await img.decode();
+	let width = img.width;
+	let height = img.height;
+
+	// prevent memory leaks by unloading the image
+	URL.revokeObjectURL(img.src);
+
+	// return size
+	return {
+		width,
+		height,
+	};
+};
 
 // get route query (if redirected back from authenticating with twitch)
 const route = useRoute();
@@ -230,8 +283,14 @@ const updateCharacter = async () => {
 					>
 						<!-- Accessory -->
 						<NuxtImg
-							v-if="accessory"
+							v-if="!customAvatarAccessory && accessory"
 							:src="`${cdnUrl}/${cdnAvatarPath}/accessory/${accessory}/5x.png`"
+							class="absolute z-[3]"
+							draggable="false"
+						/>
+						<NuxtImg
+							v-else-if="customAvatarAccessory"
+							:src="customAvatarAccessory"
 							class="absolute z-[3]"
 							draggable="false"
 						/>
@@ -293,50 +352,79 @@ const updateCharacter = async () => {
 				<img src="/images/ppCircle.webp" draggable="false" />
 			</div>
 
-			<!-- Twitch Integration -->
-			<UButton
-				v-if="!avatarData && !readonly_mode"
-				color="purple"
-				rounded
-				:disabled="avatar_state != 'loaded'"
-				:to="
-					avatar_state == 'loaded'
-						? 'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=' +
-						  twitchAppClientId +
-						  '&redirect_uri=' +
-						  useRequestURL().origin +
-						  '/avatar'
-						: undefined
-				"
-			>
-				<span
-					class="text-white text-center text-lg flex items-center justify-center gap-x-2"
+			<!-- Buttons -->
+			<div class="flex items-center justify-center gap-x-2">
+				<!-- Twitch Integration -->
+				<UButton
+					v-if="!avatarData && !readonly_mode"
+					color="purple"
+					rounded
+					:disabled="avatar_state != 'loaded'"
+					:to="
+						avatar_state == 'loaded'
+							? 'https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=' +
+							  twitchAppClientId +
+							  '&redirect_uri=' +
+							  useRequestURL().origin +
+							  '/avatar'
+							: undefined
+					"
 				>
-					<NuxtIcon name="simple-icons:twitch" />
-					<span>Sign In To Twitch</span>
-				</span>
-			</UButton>
+					<span
+						class="text-white text-center text-lg flex items-center justify-center gap-x-2"
+					>
+						<NuxtIcon name="simple-icons:twitch" />
+						<span>Sign In To Twitch</span>
+					</span>
+				</UButton>
 
-			<!-- Logged In -->
-			<div
-				v-else-if="avatarData"
-				class="flex flex-col items-center justify-center gap-y-2"
-			>
-				<!-- Name -->
-				<span class="text-white text-2xl">
-					{{ avatarData.display_name }}
-				</span>
+				<!-- Logged In -->
+				<div
+					v-else-if="avatarData"
+					class="flex flex-col items-center justify-center gap-y-2"
+				>
+					<!-- Name -->
+					<span class="text-white text-2xl">
+						{{ avatarData.display_name }}
+					</span>
 
-				<!-- Save Avatar Changes -->
-				<div v-if="!readonly_mode">
-					<UButton
-						color="green"
-						label="Save"
-						:disabled="save_state != 'saveable'"
-						:loading="save_state == 'saving'"
-						@click="updateCharacter"
-					/>
+					<!-- Save Avatar Changes -->
+					<div v-if="!readonly_mode">
+						<UButton
+							color="green"
+							label="Save"
+							:disabled="save_state != 'saveable'"
+							:loading="save_state == 'saving'"
+							@click="updateCharacter"
+							placeholder="TEST"
+						/>
+					</div>
 				</div>
+
+				<!-- Custom Accessory Image -->
+				<UButton
+					v-if="!avatarData && !readonly_mode"
+					rounded
+					:disabled="avatar_state != 'loaded'"
+					onclick="document.getElementById('getFile').click()"
+				>
+					<span
+						class="text-white text-center text-lg flex items-center justify-center gap-x-2"
+					>
+						<span>Try Custom Accessory</span>
+					</span>
+					<input
+						@change="
+							async (event: any) => {
+								await userUploadedImage(event.target.files[0]);
+							}
+						"
+						type="file"
+						id="getFile"
+						style="display: none"
+						accept="image/png"
+					/>
+				</UButton>
 			</div>
 
 			<!-- Options -->
