@@ -5,11 +5,11 @@
   <!-- this link was replaced with the not-quite-identical file below it -->
  <!--  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.1/dc.css" /> -->
 <!--   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" /> -->
-  <link rel="stylesheet" type="text/css" href="CSS/dataTables.css" />
-  <link rel="stylesheet" type="text/css" href="CSS/dc_211.css" />
-  <link rel="stylesheet" type="text/css" href="CSS/style.css" />
+  <link rel="stylesheet" type="text/css" href="/census/CSS/dataTables.css" />
+  <link rel="stylesheet" type="text/css" href="/census/CSS/dc_211.css" />
+  <link rel="stylesheet" type="text/css" href="/census/CSS/style.css" />
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script> -->
-  <script src="JS/d3.js"></script>
+  <script src="/census/JS/d3.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.4.0-alpha.6/crossfilter.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.1/dc.js"></script>
@@ -17,7 +17,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script> -->
-  <script src="JS/dataTablesJquery.js"></script>
+  <script src="/census/JS/dataTablesJquery.js"></script>
 </head>
 
 <body>
@@ -60,10 +60,10 @@
       </div>
     </div>
 
-    <script src="JS/questions.js"></script>
-    <script src="JS/pickChart.js"></script>
+    <script src="/census/JS/questions.js"></script>
+    <script src="/census/JS/pickChart.js"></script>
     <script>
-        d3.csv("data/poke_census_responses.csv", function(data) { 
+        d3.csv("/census/data/poke_census_responses.csv", function(data) { 
             console.log(data);
             data = splitBasedSmCol(data)
             // data = takeOutSpacesinKeys(data)
