@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- this link was replaced with the not-quite-identical file below it -->
+ <!--  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.1/dc.css" /> -->
+<!--   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" /> -->
+  <link rel="stylesheet" type="text/css" href="CSS/dataTables.css" />
+  <link rel="stylesheet" type="text/css" href="CSS/dc_211.css" />
+  <link rel="stylesheet" type="text/css" href="CSS/style.css" />
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script> -->
+  <script src="JS/d3.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.4.0-alpha.6/crossfilter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.1/dc.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script> -->
+  <script src="JS/dataTablesJquery.js"></script>
+</head>
+
+<body>
+    <div id="header" class="row header">
+        <div class="col-sm-12">
+          <h2 class="center">Some Survey Title Goes Here</h2>
+            <p>This information was collected to give participants insight into the range of blank and blank. For instance, we might want to know about blank and blank?</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- <div class="col-sm-4">
+        </div> -->
+        <div class="col-sm-12">
+            <div>
+                <p class="center">These charts are linked. Clicking on a chart item will filter every other chart. This helps see patterns in the responses.</p>
+           </div>
+      </div>
+      <div class="col-sm-12">
+          <!-- <button type="button" class="btn btn-default">Default</button> -->
+          <!-- <p class="btn-primary"> -->
+          <div class="center">
+              <a class="center" href="javascript:dc.filterAll(); dc.renderAll();"><button type="button" class="btn btn-primary">Clear All Filters</button></a>
+          </div>
+          <!-- </p> -->
+      </div>
+    </div>
+    <div id="hangChartRowsOffMe"></div>
+
+    <div class="center">
+              <a class="center" href="javascript:dc.filterAll(); dc.renderAll();"><button type="button" class="btn btn-primary">Clear All Filters</button></a>
+    </div>
+    <div class="row surveyRow gap">
+    </div>
+    <div class="row footer">
+        <div class="col-sm-12">
+          <h4>About</h4>
+          <p>This data visualization was created with open-source JavaScript libraries, including: <a href="https://dc-js.github.io/dc.js/">DC.js</a>, <a href="https://github.com/crossfilter/crossfilter">Crossfilter.js</a>, and <a href="https://d3js.org/">D3.js</a>. D3.js creates the charts, DC.js handles the dimensional filtering between charts, and crossfilter creates the links between each data dimension.</p>
+          <p>For more information, please go to the github <a href="https://github.com/JustinGOSSES/SurViz_dcjs_googleform">readme</a></p>
+      </div>
+    </div>
+
+    <script src="JS/questions.js"></script>
+    <script src="JS/pickChart.js"></script>
+    <script>
+        d3.csv("data/poke_census_responses.csv", function(data) { 
+            console.log(data);
+            data = splitBasedSmCol(data)
+            // data = takeOutSpacesinKeys(data)
+            console.log("processed into arrays hopefully! ",data);
+            complete: examineAnswers(data)
+        });
+
+        //// function to only return unique items in an array
+        function uniq(a) {
+          var prims = {"boolean":{},"number":{},"string":{}},objs = [];
+          return a.filter(function(item) {
+            var type = typeof item;
+            if(type in prims)
+              return prims[type].hasOwnProperty(item) ? false :  (prims[type][item] = true);
+            else 
+              return objs.indexOf(item) >= 0 ? false : objs.push(item);
+          });
+        }
+
+        /// function that splits any string in json that contains a ; into an array
+        function splitBasedSmCol(data){
+            //// for each object, check if each value in key value pair is string, if string check if a ; is present,
+            //// if present ; present in string, make an array and split string into array items on ;
+            //// replace string with array in that value place
+            //// str.split(" ")
+            var processedData = data
+            var row_number = -1
+            processedData.forEach(function(row){
+                row_number += 1
+                keys = Object.keys(row)
+                values = Object.keys(row).map(function(key){
+                  return row[key];
+                });
+                for (i = 0; i < values.length; i++) {  
+                    if (typeof values[i] === 'string' && values[i].indexOf(';') >-1){
+                        newValue = values[i].split(";")
+                        //console.log("newValue",newValue)
+                        //console.log("processedData",processedData)
+                        //console.log("row",row)
+                        processedData[row_number][keys[i]] = newValue
+                    }
+                    if (typeof values[i] === 'string' && values[i].indexOf(';') < 1){
+                      processedData[row_number][keys[i]] = [values[i]]
+                    }
+                }
+            });
+            return processedData
+        }
+        function takeOutSpacesinKeys(data){
+            //// for each object in data, replace all " " in key name with "_" so it is easier to use as ID
+            //// for each element in each row, find key and replace " " with "_"
+            var processedData = data
+            var row_number = -1
+            processedData.forEach(function(row){
+                row_number += 1
+                keys = Object.keys(row)
+                values = Object.values(row)
+                for (i = 0; i < keys.length; i++) {  
+                    newKeyString = keys[i].replace(/ /g ,"_")
+                    console.log("newKeyString ",newKeyString)
+                    processedData[row_number][newKeyString] = processedData[row_number][keys[i]]
+                    delete processedData[row_number][keys[i]]
+                }
+            });
+            return processedData
+        }
+
+        function putInSpacesinString(string){
+          string = string.replace(/_/g ," ")
+          return string
+        }
+
+        function putInSpacesinKeys(data){
+            //// for each object in data, replace all " " in key name with "_" so it is easier to use as ID
+            //// for each element in each row, find key and replace " " with "_"
+            var processedData = data
+            var row_number = -1
+            processedData.forEach(function(row){
+                row_number += 1
+                keys = Object.keys(row)
+                values = Object.values(row)
+                for (i = 0; i < keys.length; i++) {  
+                    newKeyString = keys[i].replace(/_/g ," ")
+                    console.log("newKeyString ",newKeyString)
+                    processedData[row_number][newKeyString] = processedData[row_number][keys[i]]
+                    delete processedData[row_number][keys[i]]
+                }
+            });
+            return processedData
+        }
+
+
+
+    </script>
+    <script>
+
+    //// looks at questions & answers and populates characteristics that will be used to decide what chart type is best to use then runs function uponDataLoad() that creates html and charts before rendering them
+    function examineAnswers(data){
+      //// looks at questions & answers and populates characteristics that will be used to decide what chart type is best to use (functions in questions.js)
+      var questions = identify_questions(data)
+      //// runs function below that takes in data and questions variable and creates html & dc.js charts
+      uponDataLoad(data,questions)
+    }
+
+    //// function that builds charts and then renders them
+    function uponDataLoad(data,questions){
+        //// adds data into crossfilter object
+        var cf = crossfilter(data);
+        //// populates ideal chart key for each of the questions based on (pickCharts.js)s
+        //// options include: piechart or linearbarDate or table
+        var questionsResult = pickChart(questions)
+        //// runs functions in (pickCharts.js) that runs through questions variable and creates best html based on recommended charts
+        //// this creates the groups for each row, explained more in pickChart.js
+        //// in other words [["question1,question2,question3"],["question4"],,etc....]
+        var rowHolder = groupQuestIntoRows(questionsResult)
+        console.log("index uponDataLoad() rowHolder = ",rowHolder)
+        //// chartNumber starts with 0.. each chart is another 1 added.
+        ////
+        var chartNumber = 0
+        //// this function takes the rowHolder object and creates html structure starting with the row, then divs inside, then charts
+        var ID = "hangChartRowsOffMe"
+        for (eachRow in rowHolder){
+          var questionNumber = chartNumber
+          //// builds all the html and charts for eachRow in the row holder
+          //// eachRow = array of chart questions represented in one bootstrap row
+          //// cf = crossfilter object created from the data 
+          //// questionWidth_ = ?????
+          //// questionNumber = see above
+          //// ID is the id of the div on which chart rows are appended
+          buildRow(data,rowHolder[eachRow],cf,ID,questionNumber,questionsResult)
+          //// progresses the chart number used as ID by the number of questions in each row array inside the rowHolder array
+          console.log("eachRow",rowHolder[eachRow])
+          chartNumber += rowHolder[eachRow].length
+        }
+
+        //buildRow(row_holder,cf,ID,height,width,questionWith_,questionNumber,scale)
+        //// runs functions in (pickCharts.js) that creates dc chart variables 
+
+
+        //// after all charts are built, renders all of them
+        dc.renderAll(); 
+    }
+    </script>
+</body>
