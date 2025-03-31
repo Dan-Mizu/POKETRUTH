@@ -2,96 +2,100 @@ import { name, version, author } from "./package.json";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-				app: {
-								head: {
-												title: "POKE TRUTH",
-												link: [
-																{
-																				rel: "icon",
-																				type: "image/x-icon",
-																				href: "/favicons/favicon.ico",
-																},
-																{
-																				rel: "manifest",
-																				href: "/favicons/site.webmanifest",
-																},
-																{
-																				rel: "mask-icon",
-																				color: "#000000",
-																				href: "/favicons/safari-pinned-tab.svg",
-																},
-																{
-																				rel: "shortcut icon",
-																				href: "/favicons/favicon.ico",
-																},
-												],
-
-												charset: "utf-8",
-												viewport: "width=device-width, initial-scale=1",
-
-												meta: [
-																{ property: "og:title", content: "POKE TRUTH" },
-																{ property: "description", content: "uncover the truth" },
-																{ property: "og:description", content: "uncover the truth" },
-																{ property: "twitter:card", content: "summary_large_image" },
-												],
-								},
+	app: {
+		head: {
+			title: "POKE TRUTH",
+			link: [
+				{
+					rel: "icon",
+					type: "image/x-icon",
+					href: "/favicons/favicon.ico",
 				},
-
-				site: {
-								indexable: false,
-								site: {
-												url: "https://poketruth.info",
-												name: "POKE TRUTH",
-								},
+				{
+					rel: "manifest",
+					href: "/favicons/site.webmanifest",
 				},
-
-				runtimeConfig: {
-								firebaseClientEmail: "",
-								firebasePrivateKey: "",
-								firebaseProjectId: "",
-								firebaseDatabaseUrl: "",
-								twitchAppClientSecret: "",
-								public: {
-												cdnUrl: "",
-												cdnAvatarPath: "",
-												twitchAppClientId: "",
-												version,
-												userAgent: `${name}/${version} (${author.email})`,
-								},
+				{
+					rel: "mask-icon",
+					color: "#000000",
+					href: "/favicons/safari-pinned-tab.svg",
 				},
-
-				srcDir: "src",
-				serverDir: "server",
-
-				components: [
-								{
-												path: "~/components", // will get any components nested in let's say /components/test too
-												pathPrefix: false,
-								},
-				],
-
-				modules: [
-				 "@nuxt/ui",
-				 "@nuxtjs/google-fonts",
-				 "@nuxt/icon",
-				 "@nuxt/image",
-				 "@nuxtjs/robots",
-				 "@nuxt/scripts",
-				],
-
-				googleFonts: {
-								base64: true,
-								families: {
-												"Anonymous Pro": true,
-												Underdog: true,
-								},
+				{
+					rel: "shortcut icon",
+					href: "/favicons/favicon.ico",
 				},
+			],
 
-				icon: {
-								componentName: "NuxtIcon",
-				},
+			charset: "utf-8",
+			viewport: "width=device-width, initial-scale=1",
 
-				devtools: { enabled: true },
-				compatibilityDate: "2024-07-16",
+			meta: [
+				{ property: "og:title", content: "POKE TRUTH" },
+				{ property: "description", content: "uncover the truth" },
+				{ property: "og:description", content: "uncover the truth" },
+				{ property: "twitter:card", content: "summary_large_image" },
+			],
+		},
+	},
+
+	site: {
+		indexable: false,
+		site: {
+			url: "https://poketruth.info",
+			name: "POKE TRUTH",
+		},
+	},
+
+	runtimeConfig: {
+		firebaseClientEmail: "",
+		firebasePrivateKey: "",
+		firebaseProjectId: "",
+		firebaseDatabaseUrl: "",
+		twitchAppClientSecret: "",
+		public: {
+			cdnUrl: "",
+			cdnAvatarPath: "",
+			twitchAppClientId: "",
+			version,
+			userAgent: `${name}/${version} (${author.email})`,
+		},
+	},
+
+	srcDir: "src",
+	serverDir: "server",
+
+	components: [
+		{
+			path: "~/components", // will get any components nested in let's say /components/test too
+			pathPrefix: false,
+		},
+	],
+
+	modules: [
+		"@nuxt/ui",
+		"@nuxtjs/google-fonts",
+		"@nuxt/icon",
+		"@nuxt/image",
+		"@nuxtjs/robots",
+		"nuxt-echarts",
+	],
+
+	googleFonts: {
+		base64: true,
+		families: {
+			"Anonymous Pro": true,
+			Underdog: true,
+		},
+	},
+
+	icon: {
+		componentName: "NuxtIcon",
+	},
+
+	echarts: {
+		ssr: true,
+	},
+
+	devtools: { enabled: true },
+	compatibilityDate: "2024-07-16",
 });
