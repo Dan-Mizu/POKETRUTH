@@ -42,6 +42,28 @@ onMounted(async () => {
 	determineChartTypes();
 });
 
+// use URL hash to scroll to question on load
+onUpdated(async () => {
+	await nextTick();
+	const hash = window.location.hash.replace("#", "").trim();
+	if (hash) scrollToQuestion(hash);
+});
+watch(
+	() => window.location.hash,
+	(newHash) => {
+		const hash = newHash.replace("#", "").trim();
+		if (hash) scrollToQuestion(hash);
+	}
+);
+
+// scroll to specific question on page
+const scrollToQuestion = (question: string) => {
+	const element = document.getElementById(question);
+	if (element) {
+		element.scrollIntoView({ behavior: "smooth" });
+	}
+};
+
 // determine which chart type each question should use
 const determineChartTypes = () => {
 	if (!rawData.value.length) return;
@@ -134,18 +156,21 @@ provide(INIT_OPTIONS_KEY, initOptions);
 				:key="question"
 			>
 				<BarChart
+					:id="(question as string)"
 					v-if="chartType === 'bar'"
 					:question="(question as string)"
 					:data="filteredData"
 					@filter="filterData"
 				/>
 				<PieChart
+					:id="(question as string)"
 					v-else-if="chartType === 'pie'"
 					:question="(question as string)"
 					:data="filteredData"
 					@filter="filterData"
 				/>
 				<MapChart
+					:id="(question as string)"
 					v-else-if="
 						chartType === 'north-america-map' ||
 						chartType === 'europe-map'
@@ -170,6 +195,10 @@ provide(INIT_OPTIONS_KEY, initOptions);
 </template>
 
 <style>
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: "Open Sans";
 	@apply bg-white text-gray-500;
