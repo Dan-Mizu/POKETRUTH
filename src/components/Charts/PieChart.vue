@@ -31,7 +31,13 @@ const chartData = computed(() => {
 		const answer = entry[props.question];
 
 		// only process valid answers, skipping non-answers
-		if (answer && answer.trim() !== "" && answer !== "Unknown") {
+		if (
+			answer &&
+			(typeof answer === "number" ||
+				(typeof answer === "string" &&
+					answer.trim() !== "" &&
+					answer !== "Unknown"))
+		) {
 			counts[answer] = (counts[answer] || 0) + 1;
 			totalValidResponses++;
 		}

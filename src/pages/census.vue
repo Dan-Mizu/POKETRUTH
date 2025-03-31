@@ -9,6 +9,24 @@ const chartConfig: { [key: string]: string } = {
 		"north-america-map",
 	"If you are in Europe, which country / territory do you currently live:":
 		"europe-map",
+	"What aspects of Poke and his stream do you enjoy the most?": "exclude",
+	"What content do you want to see more of in the future of this channel?":
+		"exclude",
+	"When making music content, is there a specifc genre you like seeing Poke experiment with? Any new genres that you think would make for a entertaining stream?":
+		"exclude",
+	"Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?":
+		"exclude",
+	"What game do you most want to see Poke play in the future?": "exclude",
+	"Who do you most want to see collab with Poke in the future?": "exclude",
+	"What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included":
+		"exclude",
+	"What is your favorite video game of all time?": "exclude",
+	"What is your favorite movie of all time?": "exclude",
+	"Who are your favorite music artists / bands?": "exclude",
+	"What is your favorite album of all time?": "exclude",
+	"What is your favorite food?": "exclude",
+	"If you have any suggestions for improvements to the Census in following years please feel free to give that feedback here. ":
+		"exclude",
 };
 
 // data references
@@ -31,7 +49,8 @@ onMounted(async () => {
 
 			// remove unwanted values while ensuring a valid object structure
 			cleanedEntry[key] =
-				typeof value === "string" && value.trim() !== ""
+				typeof value === "number" ||
+				(typeof value === "string" && value.trim() !== "")
 					? value
 					: "Unknown";
 		}
@@ -200,7 +219,6 @@ html {
 }
 
 body {
-	font-family: "Open Sans";
 	@apply bg-white text-gray-500;
 }
 </style>

@@ -37,7 +37,13 @@ const chartData = computed(() => {
 		let answer = entry[props.question];
 
 		// only process valid answers, skipping non-answers
-		if (answer && answer.trim() !== "" && answer !== "Unknown") {
+		if (
+			answer &&
+			(typeof answer === "number" ||
+				(typeof answer === "string" &&
+					answer.trim() !== "" &&
+					answer !== "Unknown"))
+		) {
 			// format answers
 			answer = answer.replace(/\s*\(\w{2}\)$/, "");
 			answer = answer.replace(
