@@ -96,49 +96,54 @@ provide(INIT_OPTIONS_KEY, initOptions);
 </script>
 
 <template>
-	<div class="h-screen w-screen">
-		<div
-			class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5"
+	<div
+		v-if="rawData.length > 0"
+		class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5 text-center"
+	>
+		<!-- title -->
+		<span
+			class="text-bold text-gray-500 text-3xl sm:text-5xl font-bold pt-5 mx-32"
+			>Pokelawls Census 2025</span
 		>
-			<!-- title -->
-			<span class="text-bold text-gray-500 text-5xl font-bold mt-5"
-				>Pokelawls Census 2025</span
-			>
 
-			<!-- reset Filter Button -->
-			<button
-				@click="activeFilter = null"
-				:disabled="activeFilter == null"
-				:class="[
-					'my-5 px-4 py-2 rounded',
-					activeFilter == null ? 'bg-gray-300' : 'bg-green-400',
-				]"
-			>
-				Reset Filters
-			</button>
+		<!-- reset Filter Button -->
+		<button
+			@click="activeFilter = null"
+			:disabled="activeFilter == null"
+			:class="[
+				'my-5 px-4 py-2 rounded',
+				activeFilter == null ? 'bg-gray-300' : 'bg-green-400',
+			]"
+		>
+			Reset Filters
+		</button>
 
-			<!-- charts -->
-			<div class="flex flex-col gap-y-20">
-				<!-- dynamically render charts based on chart type -->
-				<template
-					v-for="(chartType, question) in chartTypes"
-					:key="question"
-				>
-					<BarChart
-						v-if="chartType === 'bar'"
-						:question="(question as string)"
-						:data="filteredData"
-						@filter="filterData"
-					/>
-					<PieChart
-						v-else-if="chartType === 'pie'"
-						:question="(question as string)"
-						:data="filteredData"
-						@filter="filterData"
-					/>
-				</template>
-			</div>
+		<!-- charts -->
+		<div class="flex flex-col gap-y-20">
+			<!-- dynamically render charts based on chart type -->
+			<template
+				v-for="(chartType, question) in chartTypes"
+				:key="question"
+			>
+				<BarChart
+					v-if="chartType === 'bar'"
+					:question="(question as string)"
+					:data="filteredData"
+					@filter="filterData"
+				/>
+				<PieChart
+					v-else-if="chartType === 'pie'"
+					:question="(question as string)"
+					:data="filteredData"
+					@filter="filterData"
+				/>
+			</template>
 		</div>
+	</div>
+
+	<!-- loading -->
+	<div v-else class="w-screen h-screen flex items-center justify-center">
+		<img src="/images/ppCircle.webp" draggable="false" />
 	</div>
 </template>
 

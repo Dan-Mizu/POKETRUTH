@@ -17,6 +17,9 @@ const emit = defineEmits<{
 	(event: "filter", questionKey: string, value: string): void;
 }>();
 
+// refs
+const answerCount = ref(0);
+
 // process data for the pie chart
 const chartData = computed(() => {
 	if (!props.data.length) return [];
@@ -33,6 +36,9 @@ const chartData = computed(() => {
 			totalValidResponses++;
 		}
 	});
+
+	// store answer count
+	answerCount.value = totalValidResponses;
 
 	// prepare data for the pie chart
 	const processedData = Object.keys(counts).map((key) => ({
@@ -86,7 +92,7 @@ const onChartClick = (params: any) => {
 </script>
 
 <template>
-	<ChartWrapper :title="question">
+	<ChartWrapper :title="question" :description="`${answerCount} answered.`">
 		<VChart class="chart" :option @click="onChartClick" />
 	</ChartWrapper>
 </template>

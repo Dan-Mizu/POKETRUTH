@@ -27,6 +27,9 @@ const emit = defineEmits<{
 	(event: "filter", questionKey: string, value: string): void;
 }>();
 
+// refs
+const answerCount = ref(0);
+
 // process data for the bar chart
 const chartData = computed(() => {
 	if (!props.data.length) return { labels: [], values: [] };
@@ -43,6 +46,9 @@ const chartData = computed(() => {
 			totalValidResponses++;
 		}
 	});
+
+	// store answer count
+	answerCount.value = totalValidResponses;
 
 	return {
 		labels: Object.keys(counts),
@@ -81,7 +87,7 @@ const onChartClick = (params: any) => {
 </script>
 
 <template>
-	<ChartWrapper :title="question">
+	<ChartWrapper :title="question" :description="`${answerCount} answered.`">
 		<VChart class="chart" :option @click="onChartClick" />
 	</ChartWrapper>
 </template>
