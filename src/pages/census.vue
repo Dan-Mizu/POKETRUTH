@@ -100,23 +100,27 @@ provide(INIT_OPTIONS_KEY, initOptions);
 		v-if="rawData.length > 0"
 		class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5 text-center"
 	>
+		<!-- filter button -->
+		<div
+			class="z-10 fixed w-full bottom-3 flex sm:justify-end justify-center px-10"
+		>
+			<button
+				@click="activeFilter = null"
+				:disabled="activeFilter == null"
+				:class="[
+					'my-5 px-4 py-2 rounded',
+					activeFilter == null ? 'bg-gray-300' : 'bg-green-400',
+				]"
+			>
+				Reset Filters
+			</button>
+		</div>
+
 		<!-- title -->
 		<span
 			class="text-bold text-gray-500 text-3xl sm:text-5xl font-bold pt-5 mx-32"
 			>Pokelawls Census 2025</span
 		>
-
-		<!-- reset Filter Button -->
-		<button
-			@click="activeFilter = null"
-			:disabled="activeFilter == null"
-			:class="[
-				'my-5 px-4 py-2 rounded',
-				activeFilter == null ? 'bg-gray-300' : 'bg-green-400',
-			]"
-		>
-			Reset Filters
-		</button>
 
 		<!-- charts -->
 		<div class="flex flex-col gap-y-20">
