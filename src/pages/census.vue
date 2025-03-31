@@ -5,6 +5,10 @@ const csvFilePath = "/census/2025.csv";
 // chart config
 const chartConfig: { [key: string]: string } = {
 	Timestamp: "exclude",
+	"If you are in North America, which state / country / territory do you currently live:":
+		"north-america-map",
+	"If you are in Europe, which country / territory do you currently live:":
+		"europe-map",
 };
 
 // data references
@@ -137,6 +141,20 @@ provide(INIT_OPTIONS_KEY, initOptions);
 				/>
 				<PieChart
 					v-else-if="chartType === 'pie'"
+					:question="(question as string)"
+					:data="filteredData"
+					@filter="filterData"
+				/>
+				<MapChart
+					v-else-if="
+						chartType === 'north-america-map' ||
+						chartType === 'europe-map'
+					"
+					:map="
+						chartType === 'north-america-map'
+							? 'North America'
+							: 'Europe'
+					"
 					:question="(question as string)"
 					:data="filteredData"
 					@filter="filterData"
