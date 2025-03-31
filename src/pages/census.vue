@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // csv data file path
-const csvFilePath = "2025.csv";
+const csvFilePath = "/census/2025.csv";
 
 // chart config
 const chartConfig: { [key: string]: string } = {
