@@ -9,24 +9,24 @@ const chartConfig: { [key: string]: string } = {
 		"north-america-map",
 	"If you are in Europe, which country / territory do you currently live:":
 		"europe-map",
-	"What aspects of Poke and his stream do you enjoy the most?": "exclude",
+	"What aspects of Poke and his stream do you enjoy the most?": "word-cloud",
 	"What content do you want to see more of in the future of this channel?":
-		"exclude",
+		"word-cloud",
 	"When making music content, is there a specifc genre you like seeing Poke experiment with? Any new genres that you think would make for a entertaining stream?":
-		"exclude",
+		"word-cloud",
 	"Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?":
-		"exclude",
-	"What game do you most want to see Poke play in the future?": "exclude",
-	"Who do you most want to see collab with Poke in the future?": "exclude",
+		"word-cloud",
+	"What game do you most want to see Poke play in the future?": "word-cloud",
+	"Who do you most want to see collab with Poke in the future?": "word-cloud",
 	"What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included":
-		"exclude",
-	"What is your favorite video game of all time?": "exclude",
-	"What is your favorite movie of all time?": "exclude",
-	"Who are your favorite music artists / bands?": "exclude",
-	"What is your favorite album of all time?": "exclude",
-	"What is your favorite food?": "exclude",
+		"word-cloud",
+	"What is your favorite video game of all time?": "word-cloud",
+	"What is your favorite movie of all time?": "word-cloud",
+	"Who are your favorite music artists / bands?": "word-cloud",
+	"What is your favorite album of all time?": "word-cloud",
+	"What is your favorite food?": "word-cloud",
 	"If you have any suggestions for improvements to the Census in following years please feel free to give that feedback here. ":
-		"exclude",
+		"word-cloud",
 };
 
 // data references
@@ -131,6 +131,7 @@ const filterData = (questionKey: string, value: any) => {
 
 // nuxt echarts setup
 import type { InitOptions } from "nuxt-echarts/runtime/types";
+import WordCloudChart from "~/components/Charts/WordCloudChart.vue";
 const initOptions = computed<InitOptions>(() => ({
 	height: 600,
 	width: 900,
@@ -199,6 +200,13 @@ provide(INIT_OPTIONS_KEY, initOptions);
 							? 'North America'
 							: 'Europe'
 					"
+					:question="(question as string)"
+					:data="filteredData"
+					@filter="filterData"
+				/>
+				<WordCloudChart
+					:id="(question as string)"
+					v-else-if="chartType === 'word-cloud'"
 					:question="(question as string)"
 					:data="filteredData"
 					@filter="filterData"

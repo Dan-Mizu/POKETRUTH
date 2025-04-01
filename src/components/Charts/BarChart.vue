@@ -48,6 +48,7 @@ const chartData = computed(() => {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
+			// count the occurrences of each answer
 			counts[answer] = (counts[answer] || 0) + 1;
 			totalValidResponses++;
 		}
@@ -94,6 +95,6 @@ const onChartClick = (params: any) => {
 
 <template>
 	<ChartWrapper :title="question" :description="`${answerCount} answered.`">
-		<VChart class="chart" :option @click="onChartClick" />
+		<VChart :option @click="onChartClick" />
 	</ChartWrapper>
 </template>
