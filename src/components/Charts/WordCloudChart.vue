@@ -6,10 +6,16 @@ import { CanvasRenderer } from "echarts/renderers";
 use([TooltipComponent, CanvasRenderer]);
 
 // props
-const props = defineProps<{
-	question: string;
-	data: { [key: string]: string }[];
-}>();
+const props = withDefaults(
+	defineProps<{
+		question: string;
+		data: { [key: string]: string }[];
+		multipleChoice?: boolean;
+	}>(),
+	{
+		multipleChoice: false,
+	}
+);
 
 // filter event
 const emit = defineEmits<{
@@ -41,8 +47,17 @@ const chartData = computed(() => {
 			if (typeof answer === "string")
 				answer = answer.trim().toLowerCase();
 
+			// get answers
+			let answerArray = props.multipleChoice
+				? // multiple choice
+				  answer.split(",").map((a) => a.trim()) // split and clean
+				: // single choice
+				  [answer];
+
 			// count the occurrences of each answer
-			counts[answer] = (counts[answer] || 0) + 1;
+			answerArray.forEach((answer) => {
+				counts[answer] = (counts[answer] || 0) + 1;
+			});
 			totalValidResponses++;
 		}
 	});

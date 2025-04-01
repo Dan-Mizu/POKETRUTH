@@ -7,10 +7,16 @@ import { CanvasRenderer } from "echarts/renderers";
 use([EPieChart, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 // props
-const props = defineProps<{
-	question: string;
-	data: { [key: string]: string }[];
-}>();
+const props = withDefaults(
+	defineProps<{
+		question: string;
+		data: { [key: string]: string }[];
+		multipleChoice?: boolean;
+	}>(),
+	{
+		multipleChoice: false,
+	}
+);
 
 // filter event
 const emit = defineEmits<{
@@ -38,8 +44,17 @@ const chartData = computed(() => {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
+			// get answers
+			let answerArray = props.multipleChoice
+				? // multiple choice
+				  answer.split(",").map((a) => a.trim()) // split and clean
+				: // single choice
+				  [answer];
+
 			// count the occurrences of each answer
-			counts[answer] = (counts[answer] || 0) + 1;
+			answerArray.forEach((answer) => {
+				counts[answer] = (counts[answer] || 0) + 1;
+			});
 			totalValidResponses++;
 		}
 	});

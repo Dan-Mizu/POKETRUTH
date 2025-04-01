@@ -3,30 +3,57 @@
 const csvFilePath = "/census/2025.csv";
 
 // chart config
-const chartConfig: { [key: string]: string } = {
-	Timestamp: "exclude",
+const chartConfig: {
+	[key: string]: {
+		type?: "exclude" | "word-cloud" | "north-america-map" | "europe-map";
+		multipleChoice?: boolean;
+	};
+} = {
+	Timestamp: { type: "exclude" },
 	"If you are in North America, which state / country / territory do you currently live:":
-		"north-america-map",
-	"If you are in Europe, which country / territory do you currently live:":
-		"europe-map",
-	"What aspects of Poke and his stream do you enjoy the most?": "word-cloud",
-	"What content do you want to see more of in the future of this channel?":
-		"word-cloud",
+		{ type: "north-america-map" },
+	"If you are in Europe, which country / territory do you currently live:": {
+		type: "europe-map",
+	},
+	"Do you have any pets?": {
+		multipleChoice: true,
+	},
+	"If you get high, how do you prefer to do it? Check all that apply": {
+		multipleChoice: true,
+	},
+	"How do you discover that Poke is live? Check all that apply": {
+		multipleChoice: true,
+	},
+	"How do you watch Poke? Check all that apply.": {
+		multipleChoice: true,
+	},
+	"What aspects of Poke and his stream do you enjoy the most?": {
+		type: "word-cloud",
+	},
+	"What content do you want to see more of in the future of this channel?": {
+		type: "word-cloud",
+	},
 	"When making music content, is there a specifc genre you like seeing Poke experiment with? Any new genres that you think would make for a entertaining stream?":
-		"word-cloud",
-	"Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?":
-		"word-cloud",
-	"What game do you most want to see Poke play in the future?": "word-cloud",
-	"Who do you most want to see collab with Poke in the future?": "word-cloud",
-	"What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included":
-		"word-cloud",
-	"What is your favorite video game of all time?": "word-cloud",
-	"What is your favorite movie of all time?": "word-cloud",
-	"Who are your favorite music artists / bands?": "word-cloud",
-	"What is your favorite album of all time?": "word-cloud",
-	"What is your favorite food?": "word-cloud",
+		{ type: "word-cloud" },
+	"Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?": {
+		type: "word-cloud",
+	},
+	"What game do you most want to see Poke play in the future?": {
+		type: "word-cloud",
+	},
+	"Who do you most want to see collab with Poke in the future?": {
+		type: "word-cloud",
+	},
+	"What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included": {
+		type: "word-cloud",
+	},
+	"What is your favorite video game of all time?": { type: "word-cloud" },
+	"What is your favorite movie of all time?": { type: "word-cloud" },
+	"Who are your favorite music artists / bands?": { type: "word-cloud" },
+	"What is your favorite album of all time?": { type: "word-cloud" },
+	"What is your favorite food?": { type: "word-cloud" },
 	"If you have any suggestions for improvements to the Census in following years please feel free to give that feedback here. ":
-		"word-cloud",
+		{ type: "word-cloud" },
 };
 
 // data references
@@ -61,7 +88,7 @@ onMounted(async () => {
 	determineChartTypes();
 });
 
-// use URL hash to scroll to question on load
+// use URL hash to scroll to question on load and when hash is updated
 onUpdated(async () => {
 	await nextTick();
 	const hash = window.location.hash.replace("#", "").trim();
@@ -94,33 +121,62 @@ const determineChartTypes = () => {
 		// get config for this question
 		const config = chartConfig[question];
 
-		// chart type is set
-		if (config === "exclude") {
-			chartTypes.value[question] = null; // exclude this chart
-		} else if (config) {
-			chartTypes.value[question] = config; // use set chart type
+		// init amount of unique answers
+		let uniqueAnswers: Set<string>;
+
+		// chart has set type
+		if (config && config.type) {
+			chartTypes.value[question] =
+				// if set to exclude, make sure chart does not show up
+				config.type !== "exclude" ? config.type : null;
+			return;
 		}
 
-		// fallback to default logic (based on unique answers)
-		else {
-			const uniqueAnswers = new Set(
-				rawData.value.map((d) => d[question])
+		// is set to multiple choice
+		else if (config && config.multipleChoice) {
+			uniqueAnswers = new Set(
+				rawData.value.flatMap(
+					(d) =>
+						d[question]?.split(",").map((ans) => ans.trim()) ?? []
+				)
 			);
-			if (uniqueAnswers.size >= 12) {
-				chartTypes.value[question] = "bar";
-			} else {
-				chartTypes.value[question] = "pie";
-			}
+		}
+
+		// fallback to default logic
+		else uniqueAnswers = new Set(rawData.value.map((d) => d[question]));
+
+		// determine chart by amount of unique answers
+		if (uniqueAnswers.size >= 12) {
+			chartTypes.value[question] = "bar";
+		} else {
+			chartTypes.value[question] = "pie";
 		}
 	});
 };
 
 // filtered data
 const filteredData = computed(() => {
+	// no filter
 	if (!activeFilter.value) return rawData.value;
-	return rawData.value.filter(
-		(d) => d[activeFilter.value!.questionKey] === activeFilter.value!.value
-	);
+
+	// get current filter
+	const { questionKey, value } = activeFilter.value;
+
+	// filter data
+	return rawData.value.filter((d) => {
+		const answer = d[questionKey];
+
+		// multiple-choice question, check if the selected value is in the answer
+		if (chartConfig[questionKey]?.multipleChoice) {
+			const answersArray = answer.split(",").map((ans) => ans.trim());
+
+			// check if respondent selected the filtered value
+			return answersArray.includes(value);
+		}
+
+		// standard single-choice filtering
+		return answer === value;
+	});
 });
 
 // filter data
@@ -180,6 +236,10 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					v-if="chartType === 'bar'"
 					:question="(question as string)"
 					:data="filteredData"
+					:multipleChoice="
+						chartConfig[question] &&
+						chartConfig[question].multipleChoice
+					"
 					@filter="filterData"
 				/>
 				<PieChart
@@ -187,6 +247,10 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					v-else-if="chartType === 'pie'"
 					:question="(question as string)"
 					:data="filteredData"
+					:multipleChoice="
+						chartConfig[question] &&
+						chartConfig[question].multipleChoice
+					"
 					@filter="filterData"
 				/>
 				<MapChart
@@ -202,6 +266,10 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					"
 					:question="(question as string)"
 					:data="filteredData"
+					:multipleChoice="
+						chartConfig[question] &&
+						chartConfig[question].multipleChoice
+					"
 					@filter="filterData"
 				/>
 				<WordCloudChart
@@ -209,6 +277,10 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					v-else-if="chartType === 'word-cloud'"
 					:question="(question as string)"
 					:data="filteredData"
+					:multipleChoice="
+						chartConfig[question] &&
+						chartConfig[question].multipleChoice
+					"
 					@filter="filterData"
 				/>
 			</template>
