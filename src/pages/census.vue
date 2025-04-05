@@ -18,7 +18,7 @@ const chartConfig: {
 	"Do you have any pets?": {
 		multipleChoice: true,
 	},
-	"If you get high, how do you prefer to do it? Check all that apply": {
+	"Of viewers who get high, here are their prefered methods:": {
 		multipleChoice: true,
 	},
 	"How do you discover that Poke is live? Check all that apply": {
