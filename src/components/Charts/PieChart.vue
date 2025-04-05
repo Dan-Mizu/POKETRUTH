@@ -12,6 +12,7 @@ const props = withDefaults(
 		question: string;
 		data: { [key: string]: string }[];
 		multipleChoice?: boolean;
+		answerOrder?: string[];
 	}>(),
 	{
 		multipleChoice: false,
@@ -67,6 +68,22 @@ const chartData = computed(() => {
 		name: key,
 		value: counts[key],
 	}));
+
+	// sort by provided answer order if given
+	if (props.answerOrder && props.answerOrder.length) {
+		// create a lookup from answer name to its index in the order array
+		const orderIndex: Record<string, number> = {};
+		props.answerOrder.forEach((answer, index) => {
+			orderIndex[answer] = index;
+		});
+
+		// sort processedData based on that index; unmatched entries go last
+		processedData.sort((a, b) => {
+			const indexA = orderIndex[a.name] ?? Infinity;
+			const indexB = orderIndex[b.name] ?? Infinity;
+			return indexA - indexB;
+		});
+	}
 
 	return processedData;
 });

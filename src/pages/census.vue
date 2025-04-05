@@ -7,6 +7,7 @@ const chartConfig: {
 	[key: string]: {
 		type?: "exclude" | "word-cloud" | "north-america-map" | "europe-map";
 		multipleChoice?: boolean;
+		answerOrder?: string[];
 	};
 } = {
 	Timestamp: { type: "exclude" },
@@ -14,6 +15,18 @@ const chartConfig: {
 		{ type: "north-america-map" },
 	"If you are in Europe, which country / territory do you currently live:": {
 		type: "europe-map",
+	},
+	"How often do you get high?": {
+		answerOrder: [
+			"Always",
+			"A few times a day",
+			"Once a day",
+			"A few times a week",
+			"A few times a month",
+			"A few times a year",
+			"Tried and quit",
+			"Never tried it",
+		],
 	},
 	"Do you have any pets?": {
 		multipleChoice: true,
@@ -236,22 +249,18 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					v-if="chartType === 'bar'"
 					:question="(question as string)"
 					:data="filteredData"
-					:multipleChoice="
-						chartConfig[question] &&
-						chartConfig[question].multipleChoice
-					"
+					:multipleChoice="chartConfig[question]?.multipleChoice"
 					@filter="filterData"
+					:answerOrder="chartConfig[question]?.answerOrder"
 				/>
 				<PieChart
 					:id="(question as string)"
 					v-else-if="chartType === 'pie'"
 					:question="(question as string)"
 					:data="filteredData"
-					:multipleChoice="
-						chartConfig[question] &&
-						chartConfig[question].multipleChoice
-					"
+					:multipleChoice="chartConfig[question]?.multipleChoice"
 					@filter="filterData"
+					:answerOrder="chartConfig[question]?.answerOrder"
 				/>
 				<MapChart
 					:id="(question as string)"
@@ -266,10 +275,7 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					"
 					:question="(question as string)"
 					:data="filteredData"
-					:multipleChoice="
-						chartConfig[question] &&
-						chartConfig[question].multipleChoice
-					"
+					:multipleChoice="chartConfig[question]?.multipleChoice"
 					@filter="filterData"
 				/>
 				<WordCloudChart
@@ -277,10 +283,7 @@ provide(INIT_OPTIONS_KEY, initOptions);
 					v-else-if="chartType === 'word-cloud'"
 					:question="(question as string)"
 					:data="filteredData"
-					:multipleChoice="
-						chartConfig[question] &&
-						chartConfig[question].multipleChoice
-					"
+					:multipleChoice="chartConfig[question]?.multipleChoice"
 					@filter="filterData"
 				/>
 			</template>

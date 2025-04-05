@@ -22,6 +22,7 @@ const props = withDefaults(
 		question: string;
 		data: { [key: string]: string }[];
 		multipleChoice?: boolean;
+		answerOrder?: string[];
 	}>(),
 	{
 		multipleChoice: false,
@@ -46,7 +47,6 @@ const chartData = computed(() => {
 	props.data.forEach((entry) => {
 		const answer = entry[props.question];
 
-		// only process valid answers, skipping non-answers
 		if (
 			answer &&
 			(typeof answer === "number" ||
@@ -54,14 +54,10 @@ const chartData = computed(() => {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
-			// get answers
 			let answerArray = props.multipleChoice
-				? // multiple choice
-				  answer.split(",").map((a) => a.trim()) // split and clean
-				: // single choice
-				  [answer];
+				? answer.split(",").map((a) => a.trim())
+				: [answer];
 
-			// count the occurrences of each answer
 			answerArray.forEach((answer) => {
 				counts[answer] = (counts[answer] || 0) + 1;
 			});
@@ -69,20 +65,48 @@ const chartData = computed(() => {
 		}
 	});
 
-	// store answer count
 	answerCount.value = totalValidResponses;
 
-	return {
-		labels: Object.keys(counts),
-		values: Object.values(counts),
-	};
+	// convert counts object into array for sorting
+	let sorted = Object.entries(counts);
+
+	// apply custom order if provided
+	if (props.answerOrder && props.answerOrder.length > 0) {
+		const orderMap = new Map(
+			props.answerOrder.map((label, index) => [label, index])
+		);
+		sorted.sort((a, b) => {
+			const aIndex = orderMap.has(a[0]) ? orderMap.get(a[0])! : Infinity;
+			const bIndex = orderMap.has(b[0]) ? orderMap.get(b[0])! : Infinity;
+			return aIndex - bIndex;
+		});
+	} else {
+		// otherwise, sort by count descending
+		sorted.sort((a, b) => b[1] - a[1]);
+	}
+
+	const labels = sorted.map(([label]) => label);
+	const values = sorted.map(([, value]) => value);
+
+	return { labels, values };
 });
 
 // chart settings
 const option = computed(() => ({
 	tooltip: {
 		trigger: "axis",
-		formatter: "{b}: {c} ({d}%)", // Adds labels to tooltips
+		formatter: (params: any) => {
+			const total = chartData.value.values.reduce(
+				(sum, val) => sum + val,
+				0
+			);
+			return params
+				.map((item: any) => {
+					const percent = ((item.value / total) * 100).toFixed(1);
+					return `${item.name}: ${item.value} (${percent}%)`;
+				})
+				.join("<br>");
+		},
 	},
 	xAxis: {
 		type: "category",
