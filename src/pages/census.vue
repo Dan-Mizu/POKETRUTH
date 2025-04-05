@@ -69,37 +69,108 @@ const chartConfig: {
 		{ type: "word-cloud" },
 };
 
+// nuxt echarts setup
+import type { InitOptions } from "nuxt-echarts/runtime/types";
+import WordCloudChart from "~/components/Charts/WordCloudChart.vue";
+const initOptions = computed<InitOptions>(() => ({
+	height: 600,
+	width: 900,
+	renderer: "canvas",
+	locale: "EN",
+}));
+provide(INIT_OPTIONS_KEY, initOptions);
+
 // data references
-const rawData: Ref<{ [key: string]: string }[]> = ref([]); // full data
+import rawData from "~/public/data/census/2025.json";
+const censusData: CensusSubmission[] = rawData as CensusSubmission[];
 const activeFilter: Ref<{ questionKey: string; value: any } | null> = ref(null); // tracks active filter
 const chartTypes = ref<{ [key: string]: string | null }>({}); // mapping of questions to chart types
-
 onMounted(async () => {
-	const response = await fetch(csvFilePath);
-	const csvText = await response.text();
-
-	// parse CSV
-	const parsedData = (await parseCsv(csvText)) as { [key: string]: string }[];
-
-	// remove "declined to answer" responses and empty values
-	rawData.value = parsedData.map((entry) => {
-		const cleanedEntry: { [key: string]: string } = {};
-		for (const key in entry) {
-			const value = entry[key];
-
-			// remove unwanted values while ensuring a valid object structure
-			cleanedEntry[key] =
-				typeof value === "number" ||
-				(typeof value === "string" && value.trim() !== "")
-					? value
-					: "Unknown";
-		}
-		return cleanedEntry;
-	});
-
 	// determine chart type for each question
 	determineChartTypes();
 });
+
+// determine which chart type each question should use
+const determineChartTypes = () => {
+	// census data exists?
+	if (!censusData.length) return;
+
+	// get the questions (column names)
+	const firstRow = censusData[0];
+	const questionKeys = Object.keys(firstRow);
+
+	// determine chart for each question
+	questionKeys.forEach((question) => {
+		// get config for this question
+		const config = chartConfig[question];
+
+		// init amount of unique answers
+		let uniqueAnswers: Set<string | number>;
+
+		// chart has set type
+		if (config && config.type) {
+			chartTypes.value[question] =
+				// if set to exclude, make sure chart does not show up
+				config.type !== "exclude" ? config.type : null;
+			return;
+		}
+
+		// is set to multiple choice
+		else if (config && config.multipleChoice) {
+			uniqueAnswers = new Set(
+				censusData.flatMap((d) =>
+					typeof d[question] === "string"
+						? d[question]?.split(",").map((ans) => ans.trim()) ?? []
+						: []
+				)
+			);
+		}
+
+		// fallback to default logic
+		else uniqueAnswers = new Set(censusData.map((d) => d[question]));
+
+		// determine chart by amount of unique answers
+		if (uniqueAnswers.size >= 12) {
+			chartTypes.value[question] = "bar";
+		} else {
+			chartTypes.value[question] = "pie";
+		}
+	});
+};
+
+// filtered data
+const filteredData = computed(() => {
+	// no filter
+	if (!activeFilter.value) return censusData;
+
+	// get current filter
+	const { questionKey, value } = activeFilter.value;
+
+	// filter data
+	return censusData.filter((d) => {
+		const answer = d[questionKey];
+
+		// multiple-choice question, check if the selected value is in the answer
+		if (
+			chartConfig[questionKey]?.multipleChoice &&
+			typeof answer === "string"
+		) {
+			const answersArray = answer.split(",").map((ans) => ans.trim());
+
+			// check if respondent selected the filtered value
+			return answersArray.includes(value);
+		}
+
+		// standard single-choice filtering
+		return answer === value;
+	});
+});
+
+// filter data
+const filterData = (questionKey: string, value: string | number) => {
+	activeFilter.value =
+		activeFilter.value?.value === value ? null : { questionKey, value };
+};
 
 // use URL hash to scroll to question on load and when hash is updated
 onUpdated(async () => {
@@ -122,97 +193,11 @@ const scrollToQuestion = (question: string) => {
 		element.scrollIntoView({ behavior: "smooth" });
 	}
 };
-
-// determine which chart type each question should use
-const determineChartTypes = () => {
-	if (!rawData.value.length) return;
-
-	const firstRow = rawData.value[0];
-	const questionKeys = Object.keys(firstRow);
-
-	questionKeys.forEach((question) => {
-		// get config for this question
-		const config = chartConfig[question];
-
-		// init amount of unique answers
-		let uniqueAnswers: Set<string>;
-
-		// chart has set type
-		if (config && config.type) {
-			chartTypes.value[question] =
-				// if set to exclude, make sure chart does not show up
-				config.type !== "exclude" ? config.type : null;
-			return;
-		}
-
-		// is set to multiple choice
-		else if (config && config.multipleChoice) {
-			uniqueAnswers = new Set(
-				rawData.value.flatMap(
-					(d) =>
-						d[question]?.split(",").map((ans) => ans.trim()) ?? []
-				)
-			);
-		}
-
-		// fallback to default logic
-		else uniqueAnswers = new Set(rawData.value.map((d) => d[question]));
-
-		// determine chart by amount of unique answers
-		if (uniqueAnswers.size >= 12) {
-			chartTypes.value[question] = "bar";
-		} else {
-			chartTypes.value[question] = "pie";
-		}
-	});
-};
-
-// filtered data
-const filteredData = computed(() => {
-	// no filter
-	if (!activeFilter.value) return rawData.value;
-
-	// get current filter
-	const { questionKey, value } = activeFilter.value;
-
-	// filter data
-	return rawData.value.filter((d) => {
-		const answer = d[questionKey];
-
-		// multiple-choice question, check if the selected value is in the answer
-		if (chartConfig[questionKey]?.multipleChoice) {
-			const answersArray = answer.split(",").map((ans) => ans.trim());
-
-			// check if respondent selected the filtered value
-			return answersArray.includes(value);
-		}
-
-		// standard single-choice filtering
-		return answer === value;
-	});
-});
-
-// filter data
-const filterData = (questionKey: string, value: any) => {
-	activeFilter.value =
-		activeFilter.value?.value === value ? null : { questionKey, value };
-};
-
-// nuxt echarts setup
-import type { InitOptions } from "nuxt-echarts/runtime/types";
-import WordCloudChart from "~/components/Charts/WordCloudChart.vue";
-const initOptions = computed<InitOptions>(() => ({
-	height: 600,
-	width: 900,
-	renderer: "canvas",
-	locale: "EN",
-}));
-provide(INIT_OPTIONS_KEY, initOptions);
 </script>
 
 <template>
 	<div
-		v-if="rawData.length > 0"
+		v-if="Object.keys(chartTypes).length > 0"
 		class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5 text-center"
 	>
 		<!-- filter button -->

@@ -1,3 +1,8 @@
+// census types
+interface CensusSubmission {
+	[key: string]: string | number;
+}
+
 // twitch user data
 interface ITwitchUser {
 	id: string;

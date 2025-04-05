@@ -20,7 +20,7 @@ use([
 const props = withDefaults(
 	defineProps<{
 		question: string;
-		data: { [key: string]: string }[];
+		data: CensusSubmission[];
 		multipleChoice?: boolean;
 		answerOrder?: string[];
 	}>(),
@@ -31,7 +31,7 @@ const props = withDefaults(
 
 // filter event
 const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string): void;
+	(event: "filter", questionKey: string, value: string | number): void;
 }>();
 
 // refs
@@ -54,11 +54,12 @@ const chartData = computed(() => {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
-			let answerArray = props.multipleChoice
-				? answer.split(",").map((a) => a.trim())
-				: [answer];
+			let answerArray =
+				props.multipleChoice && typeof answer === "string"
+					? answer.split(",").map((a: string) => a.trim())
+					: [answer];
 
-			answerArray.forEach((answer) => {
+			answerArray.forEach((answer: string | number) => {
 				counts[answer] = (counts[answer] || 0) + 1;
 			});
 			totalValidResponses++;

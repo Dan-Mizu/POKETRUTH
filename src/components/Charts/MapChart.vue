@@ -16,7 +16,7 @@ const props = withDefaults(
 	defineProps<{
 		map: "Europe" | "North America";
 		question: string;
-		data: { [key: string]: string }[];
+		data: CensusSubmission[];
 		multipleChoice?: boolean;
 	}>(),
 	{
@@ -26,17 +26,17 @@ const props = withDefaults(
 
 // filter event
 const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string): void;
+	(event: "filter", questionKey: string, value: string | number): void;
 }>();
 
 // refs
 const answerCount = ref(0);
-const cleanedToRawMap = ref<Record<string, Set<string>>>({});
+const cleanedToRawMap = ref<Record<string, Set<string | number>>>({});
 
 // process the raw data into chart-ready format and a cleaned-to-raw map.
 function processChartData() {
 	const counts: Record<string, number> = {};
-	const rawMap: Record<string, Set<string>> = {};
+	const rawMap: Record<string, Set<string | number>> = {};
 	let total = 0;
 
 	for (const entry of props.data) {
@@ -49,23 +49,27 @@ function processChartData() {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
-			// Normalize and cleanup
-			answer = answer.replace(
-				"US territories (Guam, Puerto Rico, etc)",
-				"Puerto Rico"
-			);
-
-			const answerArray = props.multipleChoice
-				? answer.split(",").map((a) => a.trim())
-				: [answer];
+			// format and cleanup
+			if (typeof answer === "string")
+				answer = answer.replace(
+					"US territories (Guam, Puerto Rico, etc)",
+					"Puerto Rico"
+				);
+			const answerArray =
+				props.multipleChoice && typeof answer === "string"
+					? answer.split(",").map((a) => a.trim())
+					: [answer];
 
 			for (const raw of answerArray) {
-				const cleaned = raw.replace(/\s*\(\w{2}\)$/, ""); // Remove state abbreviations
+				const cleaned =
+					typeof raw === "string"
+						? raw.replace(/\s*\(\w{2}\)$/, "") // remove state abbreviations
+						: raw;
 
-				// Count cleaned answer
+				// count answer
 				counts[cleaned] = (counts[cleaned] || 0) + 1;
 
-				// Build reverse lookup
+				// build reverse lookup
 				if (!rawMap[cleaned]) rawMap[cleaned] = new Set();
 				rawMap[cleaned].add(raw);
 			}

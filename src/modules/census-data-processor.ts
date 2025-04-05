@@ -1,0 +1,70 @@
+// src/modules/census-data-processor.ts
+import { createResolver, defineNuxtModule } from "nuxt/kit";
+import fs from "fs";
+import path from "path";
+import Papa from "papaparse";
+
+export default defineNuxtModule({
+	meta: {
+		name: "census-data-processor",
+	},
+	async setup() {
+		const { resolve } = createResolver(import.meta.url);
+
+		// get input/output file paths
+		const inputPath = resolve("../assets/data/census/2025.csv"); // Adjust this to your directory structure
+		const outputPath = resolve("../public/data/census/2025.json");
+
+		// check if the file exists
+		if (!fs.existsSync(inputPath)) {
+			console.warn(
+				"[census-data-processor] CSV file not found at",
+				inputPath
+			);
+			return;
+		}
+
+		// read CSV file
+		const csvText = fs.readFileSync(inputPath, "utf-8");
+		const parsedData = await parseCsv(csvText);
+
+		// clean data
+		const cleanedData = parsedData.map((entry) => {
+			const cleanedEntry: { [key: string]: string | number } = {};
+			for (const key in entry) {
+				const value = entry[key];
+				cleanedEntry[key] =
+					typeof value === "number" ||
+					(typeof value === "string" && value.trim() !== "")
+						? value
+						: "Unknown";
+			}
+			return cleanedEntry;
+		});
+
+		// ensure directory exists, then save data as json file
+		fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+		fs.writeFileSync(
+			outputPath,
+			JSON.stringify(cleanedData, null, 2),
+			"utf-8"
+		);
+
+		// success
+		console.log(
+			`[census-data-processor] CSV parsed and saved to ${outputPath}`
+		);
+	},
+});
+
+// CSV file parsing
+async function parseCsv(data: string) {
+	return new Promise<any[]>((resolve, reject) => {
+		Papa.parse(data, {
+			header: true,
+			dynamicTyping: true,
+			complete: (results) => resolve(results.data),
+			error: reject,
+		});
+	});
+}

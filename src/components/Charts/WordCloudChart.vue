@@ -9,7 +9,7 @@ use([TooltipComponent, CanvasRenderer]);
 const props = withDefaults(
 	defineProps<{
 		question: string;
-		data: { [key: string]: string }[];
+		data: CensusSubmission[];
 		multipleChoice?: boolean;
 	}>(),
 	{
@@ -19,7 +19,7 @@ const props = withDefaults(
 
 // filter event
 const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string): void;
+	(event: "filter", questionKey: string, value: string | number): void;
 }>();
 
 // refs
@@ -48,11 +48,12 @@ const chartData = computed(() => {
 				answer = answer.trim().toLowerCase();
 
 			// get answers
-			let answerArray = props.multipleChoice
-				? // multiple choice
-				  answer.split(",").map((a) => a.trim()) // split and clean
-				: // single choice
-				  [answer];
+			let answerArray =
+				props.multipleChoice && typeof answer === "string"
+					? // multiple choice
+					  answer.split(",").map((a) => a.trim()) // split and clean
+					: // single choice
+					  [answer];
 
 			// count the occurrences of each answer
 			answerArray.forEach((answer) => {
