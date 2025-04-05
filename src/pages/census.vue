@@ -1,11 +1,15 @@
 <script setup lang="ts">
-// csv data file path
-const csvFilePath = "/census/2025.csv";
-
 // chart config
 const chartConfig: {
 	[key: string]: {
-		type?: "exclude" | "word-cloud" | "north-america-map" | "europe-map";
+		type?:
+			| null
+			| "exclude"
+			| "bar"
+			| "pie"
+			| "word-cloud"
+			| "north-america-map"
+			| "europe-map";
 		multipleChoice?: boolean;
 		answerOrder?: string[];
 	};
@@ -83,8 +87,17 @@ provide(INIT_OPTIONS_KEY, initOptions);
 // data references
 import rawData from "~/public/data/census/2025.json";
 const censusData: CensusSubmission[] = rawData as CensusSubmission[];
-const activeFilter: Ref<{ questionKey: string; value: any } | null> = ref(null); // tracks active filter
-const chartTypes = ref<{ [key: string]: string | null }>({}); // mapping of questions to chart types
+const activeFilter: Ref<{ questionKey: string; value: string } | null> =
+	ref(null); // tracks active filter
+const chartTypes = ref<{
+	[key: string]:
+		| null
+		| "bar"
+		| "pie"
+		| "word-cloud"
+		| "north-america-map"
+		| "europe-map";
+}>({}); // mapping of questions to chart types
 onMounted(async () => {
 	// determine chart type for each question
 	determineChartTypes();
@@ -167,17 +180,12 @@ const filteredData = computed(() => {
 });
 
 // filter data
-const filterData = (questionKey: string, value: string | number) => {
+const filterData = (questionKey: string, value: any) => {
 	activeFilter.value =
 		activeFilter.value?.value === value ? null : { questionKey, value };
 };
 
 // use URL hash to scroll to question on load and when hash is updated
-onUpdated(async () => {
-	await nextTick();
-	const hash = window.location.hash.replace("#", "").trim();
-	if (hash) scrollToQuestion(hash);
-});
 watch(
 	() => window.location.hash,
 	(newHash) => {
@@ -193,6 +201,31 @@ const scrollToQuestion = (question: string) => {
 		element.scrollIntoView({ behavior: "smooth" });
 	}
 };
+
+// fade in charts as needed
+const charts: Ref<HTMLElement[]> = ref([]);
+onMounted(() => {
+	nextTick(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry, index) => {
+					const chartElement = entry.target;
+					if (entry.isIntersecting) {
+						chartElement.classList.add("visible");
+					} else {
+						chartElement.classList.remove("visible");
+					}
+				});
+			},
+			{
+				threshold: 0.1, // fade-in the chart when 20% of it is in the viewport
+			}
+		);
+
+		// observe each chart element
+		charts.value.forEach((chart) => observer.observe(chart));
+	});
+});
 </script>
 
 <template>
@@ -226,51 +259,54 @@ const scrollToQuestion = (question: string) => {
 		<div class="flex flex-col gap-y-20">
 			<!-- dynamically render charts based on chart type -->
 			<template
-				v-for="(chartType, question) in chartTypes"
-				:key="question"
+				v-for="(chartType, question, index) in chartTypes"
+				:key="(question as string)"
 			>
-				<BarChart
+				<!-- only load charts with valid questions and in viewport -->
+				<div
+					class="chart-container fade-in"
 					:id="(question as string)"
-					v-if="chartType === 'bar'"
-					:question="(question as string)"
-					:data="filteredData"
-					:multipleChoice="chartConfig[question]?.multipleChoice"
-					@filter="filterData"
-					:answerOrder="chartConfig[question]?.answerOrder"
-				/>
-				<PieChart
-					:id="(question as string)"
-					v-else-if="chartType === 'pie'"
-					:question="(question as string)"
-					:data="filteredData"
-					:multipleChoice="chartConfig[question]?.multipleChoice"
-					@filter="filterData"
-					:answerOrder="chartConfig[question]?.answerOrder"
-				/>
-				<MapChart
-					:id="(question as string)"
-					v-else-if="
-						chartType === 'north-america-map' ||
-						chartType === 'europe-map'
-					"
-					:map="
-						chartType === 'north-america-map'
-							? 'North America'
-							: 'Europe'
-					"
-					:question="(question as string)"
-					:data="filteredData"
-					:multipleChoice="chartConfig[question]?.multipleChoice"
-					@filter="filterData"
-				/>
-				<WordCloudChart
-					:id="(question as string)"
-					v-else-if="chartType === 'word-cloud'"
-					:question="(question as string)"
-					:data="filteredData"
-					:multipleChoice="chartConfig[question]?.multipleChoice"
-					@filter="filterData"
-				/>
+					ref="charts"
+				>
+					<BarChart
+						v-if="chartType === 'bar'"
+						:question="(question as string)"
+						:data="filteredData"
+						:multipleChoice="chartConfig[question]?.multipleChoice"
+						@filter="filterData"
+						:answerOrder="chartConfig[question]?.answerOrder"
+					/>
+					<PieChart
+						v-else-if="chartType === 'pie'"
+						:question="(question as string)"
+						:data="filteredData"
+						:multipleChoice="chartConfig[question]?.multipleChoice"
+						@filter="filterData"
+						:answerOrder="chartConfig[question]?.answerOrder"
+					/>
+					<MapChart
+						v-else-if="
+							chartType === 'north-america-map' ||
+							chartType === 'europe-map'
+						"
+						:map="
+							chartType === 'north-america-map'
+								? 'North America'
+								: 'Europe'
+						"
+						:question="(question as string)"
+						:data="filteredData"
+						:multipleChoice="chartConfig[question]?.multipleChoice"
+						@filter="filterData"
+					/>
+					<WordCloudChart
+						v-else-if="chartType === 'word-cloud'"
+						:question="(question as string)"
+						:data="filteredData"
+						:multipleChoice="chartConfig[question]?.multipleChoice"
+						@filter="filterData"
+					/>
+				</div>
 			</template>
 		</div>
 	</div>
@@ -288,5 +324,14 @@ html {
 
 body {
 	@apply bg-white text-gray-500;
+}
+
+.fade-in {
+	opacity: 0;
+	transition: opacity 0.25s ease-in-out;
+}
+
+.fade-in.visible {
+	opacity: 1;
 }
 </style>
