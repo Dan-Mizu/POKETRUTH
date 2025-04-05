@@ -31,18 +31,17 @@ const emit = defineEmits<{
 
 // refs
 const answerCount = ref(0);
+const cleanedToRawMap = ref<Record<string, Set<string>>>({});
 
-// process data for the map chart
-const chartData = computed(() => {
-	if (!props.data.length) return [];
-
+// process the raw data into chart-ready format and a cleaned-to-raw map.
+function processChartData() {
 	const counts: Record<string, number> = {};
-	let totalValidResponses = 0;
+	const rawMap: Record<string, Set<string>> = {};
+	let total = 0;
 
-	props.data.forEach((entry) => {
+	for (const entry of props.data) {
 		let answer = entry[props.question];
 
-		// only process valid answers, skipping non-answers
 		if (
 			answer &&
 			(typeof answer === "number" ||
@@ -50,53 +49,69 @@ const chartData = computed(() => {
 					answer.trim() !== "" &&
 					answer !== "Unknown"))
 		) {
-			// format answers
-			answer = answer.replace(/\s*\(\w{2}\)$/, "");
+			// Normalize and cleanup
 			answer = answer.replace(
 				"US territories (Guam, Puerto Rico, etc)",
 				"Puerto Rico"
 			);
 
-			// get answers
-			let answerArray = props.multipleChoice
-				? // multiple choice
-				  answer.split(",").map((a) => a.trim()) // split and clean
-				: // single choice
-				  [answer];
+			const answerArray = props.multipleChoice
+				? answer.split(",").map((a) => a.trim())
+				: [answer];
 
-			// count the occurrences of each answer
-			answerArray.forEach((answer) => {
-				counts[answer] = (counts[answer] || 0) + 1;
-			});
-			totalValidResponses++;
+			for (const raw of answerArray) {
+				const cleaned = raw.replace(/\s*\(\w{2}\)$/, ""); // Remove state abbreviations
+
+				// Count cleaned answer
+				counts[cleaned] = (counts[cleaned] || 0) + 1;
+
+				// Build reverse lookup
+				if (!rawMap[cleaned]) rawMap[cleaned] = new Set();
+				rawMap[cleaned].add(raw);
+			}
+
+			total++;
 		}
-	});
+	}
 
-	// store answer count
-	answerCount.value = totalValidResponses;
+	// Save values to refs
+	cleanedToRawMap.value = rawMap;
+	answerCount.value = total;
 
-	// Convert counts to an array of objects for ECharts
+	// Convert counts to chart-friendly format
 	return Object.entries(counts).map(([name, value]) => ({ name, value }));
-});
+}
+
+// computed chart data
+const chartData = computed(() => processChartData());
 
 // chart settings
 const option = computed(() => {
-	// extract values from chartData
 	const values = chartData.value.map((entry) => entry.value);
+
+	// If no values, fallback to safe defaults
+	const rawMin = Math.min(...values);
+	const rawMax = Math.max(...values);
+
+	const isFlat = rawMin === rawMax;
+	const min = isFlat ? 0 : rawMin;
+	const max = isFlat ? rawMax || 10 : rawMax;
 
 	return {
 		tooltip: {
 			trigger: "item",
-			formatter: (params: { value: number; name: any }) => {
-				// show value, or 0 if none exists
-				const value = params.value > 0 ? params.value : 0;
+			formatter: (params: { value: number; name: string }) => {
+				const value =
+					typeof params.value === "number" && !isNaN(params.value)
+						? params.value
+						: 0;
 				return `${params.name}: ${value}`;
 			},
 		},
 		visualMap: {
 			left: "right",
-			min: Math.min(...values) || 1, // smallest answer number, default to 1
-			max: Math.max(...values) || 10, // largest answer number, default to 10
+			min,
+			max,
 			inRange: {
 				color: [
 					"#c6e6f1",
@@ -107,6 +122,9 @@ const option = computed(() => {
 					"#185a9d",
 					"#0b3d91",
 				],
+			},
+			outOfRange: {
+				color: "#ffffff", // white for missing states
 			},
 			text: ["High", "Low"],
 			calculable: true,
@@ -123,15 +141,27 @@ const option = computed(() => {
 					},
 				},
 				data: chartData.value,
-				itemStyle: { color: "#3498db" },
+				itemStyle: {
+					borderColor: "#aaa",
+				},
 			},
 		],
 	};
 });
 
-// filtering on click event
-const onChartClick = (params: any) => {
-	emit("filter", props.question, params.name);
+// filtering on click
+const onChartClick = (params: { name: string }) => {
+	const cleaned = params.name;
+	const rawSet = cleanedToRawMap.value[cleaned];
+
+	if (rawSet && rawSet.size > 0) {
+		for (const rawValue of rawSet) {
+			emit("filter", props.question, rawValue);
+		}
+	} else {
+		// Fallback in case cleaned name not found
+		emit("filter", props.question, cleaned);
+	}
 };
 </script>
 
