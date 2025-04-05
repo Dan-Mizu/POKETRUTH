@@ -1,0 +1,74 @@
+{
+    "Timestamp": {
+        "type": "exclude"
+    },
+    "If you are in North America, which state / country / territory do you currently live:": {
+        "type": "north-america-map"
+    },
+    "If you are in Europe, which country / territory do you currently live:": {
+        "type": "europe-map"
+    },
+    "How often do you get high?": {
+        "answerOrder": [
+            "Always",
+            "A few times a day",
+            "Once a day",
+            "A few times a week",
+            "A few times a month",
+            "A few times a year",
+            "Tried and quit",
+            "Never tried it"
+        ]
+    },
+    "Do you have any pets?": {
+        "multipleChoice": true
+    },
+    "Of viewers who get high, here are their prefered methods:": {
+        "multipleChoice": true
+    },
+    "How do you discover that Poke is live? Check all that apply": {
+        "multipleChoice": true
+    },
+    "How do you watch Poke? Check all that apply.": {
+        "multipleChoice": true
+    },
+    "What aspects of Poke and his stream do you enjoy the most?": {
+        "type": "word-cloud"
+    },
+    "What content do you want to see more of in the future of this channel?": {
+        "type": "word-cloud"
+    },
+    "When making music content, is there a specifc genre you like seeing Poke experiment with? Any new genres that you think would make for a entertaining stream?": {
+        "type": "word-cloud"
+    },
+    "Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?": {
+        "type": "word-cloud"
+    },
+    "What game do you most want to see Poke play in the future?": {
+        "type": "word-cloud"
+    },
+    "Who do you most want to see collab with Poke in the future?": {
+        "type": "word-cloud"
+    },
+    "What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included": {
+        "type": "word-cloud"
+    },
+    "What is your favorite video game of all time?": {
+        "type": "word-cloud"
+    },
+    "What is your favorite movie of all time?": {
+        "type": "word-cloud"
+    },
+    "Who are your favorite music artists / bands?": {
+        "type": "word-cloud"
+    },
+    "What is your favorite album of all time?": {
+        "type": "word-cloud"
+    },
+    "What is your favorite food?": {
+        "type": "word-cloud"
+    },
+    "If you have any suggestions for improvements to the Census in following years please feel free to give that feedback here. ": {
+        "type": "word-cloud"
+    }
+}

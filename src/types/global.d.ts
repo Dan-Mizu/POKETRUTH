@@ -1,4 +1,27 @@
 // census types
+interface CensusChartConfig {
+	[key: string]: {
+		type?:
+			| null
+			| "exclude"
+			| "bar"
+			| "pie"
+			| "word-cloud"
+			| "north-america-map"
+			| "europe-map";
+		multipleChoice?: boolean;
+		answerOrder?: string[];
+	};
+}
+
+type CensusChartTypes =
+	| null
+	| "bar"
+	| "pie"
+	| "word-cloud"
+	| "north-america-map"
+	| "europe-map";
+
 interface CensusSubmission {
 	[key: string]: string | number;
 }
