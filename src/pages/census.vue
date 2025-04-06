@@ -107,27 +107,17 @@ onMounted(() => {
 		v-show="charts.length > 0"
 		class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5 text-center"
 	>
-		<!-- filter button -->
-		<div
-			class="z-10 fixed w-full bottom-3 flex sm:justify-end justify-center px-10"
-		>
-			<button
-				@click="activeFilter = null"
-				:disabled="activeFilter == null"
-				:class="[
-					'my-5 px-4 py-2 rounded',
-					activeFilter == null ? 'bg-gray-300' : 'bg-green-400',
-				]"
-			>
-				Reset Filters
-			</button>
-		</div>
-
 		<!-- title -->
-		<span
-			class="text-bold text-gray-500 text-3xl sm:text-5xl font-bold pt-5 mx-32"
-			>Pokelawls Census 2025</span
+		<div
+			class="flex flex-col items-center justify-center text-center pt-5 mx-32 gap-y-2"
 		>
+			<span class="text-3xl sm:text-5xl text-gray-500 font-bold">
+				Pokelawls Census 2025
+			</span>
+			<span class="text-lg sm:text-xl text-gray-300 font">
+				(click on a chart to cross-filter other charts)
+			</span>
+		</div>
 
 		<!-- charts -->
 		<div class="flex flex-col gap-y-20">
@@ -182,6 +172,42 @@ onMounted(() => {
 					/>
 				</div>
 			</template>
+		</div>
+	</div>
+
+	<!-- tool bar -->
+	<div
+		v-show="activeFilter"
+		class="z-10 fixed w-full bottom-3 flex sm:justify-end justify-center px-10"
+	>
+		<!-- filter button -->
+		<div class="h-10 text-white flex gap-x-1 items-center justify-center">
+			<!-- icon and filtering answer -->
+			<button
+				@click="scrollToQuestion(activeFilter?.questionKey as string)"
+				:title="'-> ' + activeFilter?.questionKey"
+				class="h-full min-w-12 px-2 pt-[0.4rem] rounded-full bg-green-400 hover:bg-green-300 font-bold flex gap-x-1"
+			>
+				<NuxtIcon
+					name="material-symbols:filter-alt"
+					class="h-6 w-6 mt-[0.05rem]"
+				/>
+				<span class="h-full pr-2 whitespace-nowrap overflow-ellipsis">
+					{{ activeFilter?.value ? activeFilter?.value : "None" }}
+				</span>
+			</button>
+
+			<!-- close button -->
+			<button
+				@click="activeFilter = null"
+				title="Remove Filter"
+				class="h-[80%] aspect-square rounded-full bg-gray-500 hover:bg-gray-400 flex items-center justify-center"
+			>
+				<NuxtIcon
+					name="material-symbols:close-small-rounded"
+					class="h-6 w-6"
+				/>
+			</button>
 		</div>
 	</div>
 </template>

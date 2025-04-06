@@ -16,6 +16,7 @@
         "tailwindcss",
         "Tintable",
         "twurple",
+        "vercel",
         "wght"
     ]
 }
