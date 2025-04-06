@@ -170,7 +170,7 @@ const onChartClick = (params: { name: string }) => {
 </script>
 
 <template>
-	<ChartWrapper :title="question" :description="`${answerCount} answered.`">
+	<ChartWrapper :question :title="question" :description="`${answerCount} answered.`">
 		<VChart :option @click="onChartClick" />
 	</ChartWrapper>
 </template>

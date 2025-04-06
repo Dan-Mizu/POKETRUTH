@@ -1,4 +1,16 @@
 <script setup lang="ts">
+// auto import commentary components
+const modules = import.meta.glob("~/components/Commentary/*.vue", {
+	eager: true,
+});
+const commentaryComponents = Object.fromEntries(
+	Object.entries(modules).map(([path, mod]) => {
+		// Extract component name from file name
+		const name = path.split("/").pop()?.replace(".vue", "") ?? "";
+		return [name, (mod as any).default];
+	})
+);
+
 // nuxt echarts setup
 import type { InitOptions } from "nuxt-echarts/runtime/types";
 import WordCloudChart from "~/components/Charts/WordCloudChart.vue";
@@ -94,10 +106,7 @@ onMounted(() => {
 
 // gag
 let gagActive: Ref<boolean | null> = ref(null);
-function clickedGagButton() {
-	// activate gag
-	gagActive.value = true;
-
+async function clickedGagButton() {
 	// play sound
 	let sound = new Audio("/audio/meme/wajaja.ogg");
 	sound.volume = 0.2;
@@ -105,7 +114,10 @@ function clickedGagButton() {
 		// end gag
 		gagActive.value = false;
 	});
-	sound.play();
+	await sound.play();
+
+	// activate gag
+	gagActive.value = true;
 }
 </script>
 
@@ -121,7 +133,7 @@ function clickedGagButton() {
 	<!-- charts -->
 	<div
 		v-show="charts.length > 0"
-		class="flex flex-col text-align-center items-center justify-center gap-y-5 my-5 text-center"
+		class="flex flex-col text-align-center items-center justify-center text-center gap-y-10 my-5"
 	>
 		<!-- title -->
 		<div
@@ -135,19 +147,51 @@ function clickedGagButton() {
 			</span>
 		</div>
 
+		<!-- introduction -->
+		<div class="flex flex-col text-start text-xl gap-y-4 mx-32">
+			<p>
+				Thank you to everyone who responded to our first community
+				census.
+			</p>
+			<p>
+				In just a week we received <strong>2,137</strong> responses with
+				over <strong>88,000</strong> words written for the open ended
+				questions.
+			</p>
+			<p>
+				AI helped some in cleaning up data and trying to make sense of
+				all your answers.
+			</p>
+			<p>Huge thank you to Dan for everything website related. &lt;3</p>
+			<p>On with the data!</p>
+		</div>
+
+		<!-- spacing -->
+		<div class="h-20" />
+
 		<!-- charts -->
-		<div class="flex flex-col gap-y-20">
+		<div class="flex flex-shrink flex-col gap-y-20">
 			<!-- dynamically render charts based on chart type -->
 			<template
 				v-for="(chartMeta, question) in chartConfig"
 				:key="(question as string)"
 			>
-				<!-- only load charts with valid questions and in viewport -->
+				<!-- fade in charts when in viewport, and ignore non-specified charts -->
 				<div
+					v-if="chartMeta.type"
 					class="chart-container fade-in"
-					:id="(question as string)"
 					ref="charts"
 				>
+					<!-- commentary -->
+					<component
+						v-if="chartMeta.commentaryComponent"
+						:is="
+							commentaryComponents[chartMeta.commentaryComponent]
+						"
+						class="pb-10"
+					/>
+
+					<!-- chart -->
 					<BarChart
 						v-if="chartMeta.type === 'bar'"
 						:question="(question as string)"
@@ -244,7 +288,7 @@ function clickedGagButton() {
 
 	<!-- gag -->
 	<div
-		v-if="gagActive"
+		v-show="gagActive"
 		class="z-20 fixed top-0 left-0 w-screen h-screen flex items-center justify-center px-10"
 	>
 		<!-- image -->

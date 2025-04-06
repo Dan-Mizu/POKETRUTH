@@ -11,6 +11,7 @@ interface CensusChartConfig {
 			| "europe-map";
 		multipleChoice?: boolean;
 		answerOrder?: string[];
+		commentaryComponent?: string;
 	};
 }
 

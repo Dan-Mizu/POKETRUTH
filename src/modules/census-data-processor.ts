@@ -79,10 +79,7 @@ export default defineNuxtModule({
 
 			// pass through set settings
 			if (config) {
-				if (config.answerOrder)
-					chartTypes[question].answerOrder = config.answerOrder;
-				if (config.multipleChoice)
-					chartTypes[question].multipleChoice = config.multipleChoice;
+				chartTypes[question] = config;
 				if (config.type) {
 					chartTypes[question].type =
 						// if set to exclude, make sure chart does not show up

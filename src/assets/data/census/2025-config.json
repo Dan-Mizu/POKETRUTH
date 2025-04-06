@@ -2,11 +2,54 @@
     "Timestamp": {
         "type": "exclude"
     },
+    "How old are you?": {
+        "commentaryComponent": "AgeCommentary"
+    },
+    "How tall are you?": {
+        "commentaryComponent": "HeightCommentary"
+    },
+    "What is your gender?": {
+        "commentaryComponent": "GenderCommentary"
+    },
+    "What do you weigh in US pounds?": {
+        "commentaryComponent": "WeightCommentary"
+    },
+    "What is your highest level of education?": {
+        "commentaryComponent": "EducationCommentary"
+    },
+    "Which best describes your current employement status?": {
+        "commentaryComponent": "EmploymentCommentary"
+    },
+    "What is your yearly income?": {
+        "commentaryComponent": "IncomeCommentary"
+    },
+    "What continent are you from?": {
+        "commentaryComponent": "ContinentCommentary"
+    },
+    "What ethnicity do you identify with?": {
+        "commentaryComponent": "EthnicityCommentary"
+    },
+    "What is your sexuality?": {
+        "commentaryComponent": "SexualityCommentary"
+    },
+    "What religion do you best align with?": {
+        "commentaryComponent": "ReligionCommentary"
+    },
+    "Which political ideology best matches yours?": {
+        "commentaryComponent": "PoliticsCommentary"
+    },
+    "What is your relationship status?": {
+        "commentaryComponent": "RelationshipCommentary"
+    },
     "If you are in North America, which state / country / territory do you currently live:": {
         "type": "north-america-map"
     },
     "If you are in Europe, which country / territory do you currently live:": {
         "type": "europe-map"
+    },
+    "Do you have any pets?": {
+        "multipleChoice": true,
+        "commentaryComponent": "PetsCommentary"
     },
     "How often do you get high?": {
         "answerOrder": [
@@ -18,22 +61,62 @@
             "A few times a year",
             "Tried and quit",
             "Never tried it"
-        ]
-    },
-    "Do you have any pets?": {
-        "multipleChoice": true
+        ],
+        "commentaryComponent": "SmokeAmountCommentary"
     },
     "Of viewers who get high, here are their prefered methods:": {
-        "multipleChoice": true
+        "multipleChoice": true,
+        "commentaryComponent": "SmokeTypeCommentary"
+    },
+    "Do you have a drivers license or your local equivilent? ": {
+        "commentaryComponent": "DrivingCommentary"
+    },
+    "How often do you order food delivery? Direct order, Door Dash, Uber Eats, etc": {
+        "commentaryComponent": "FoodDeliveryCommentary"
+    },
+    "Do you have VR, if so was Poke a contributing reason why?": {
+        "commentaryComponent": "VRCommentary"
+    },
+    "Are you a furry, if so did Poke have some involvement?": {
+        "commentaryComponent": "FurryCommentary"
+    },
+    "Are you a femboy, if so did Poke have some involvement?": {
+        "commentaryComponent": "FemboyCommentary"
+    },
+    "Are you bald?": {
+        "commentaryComponent": "BaldCommentary"
+    },
+    "Have you served in your countries military?": {
+        "commentaryComponent": "MilitaryCommentary"
+    },
+    "Have you ever tried making your own salsa?": {
+        "commentaryComponent": "SalsaCommentary"
+    },
+    "How many languages do you speak or read including your native one?": {
+        "commentaryComponent": "LanguageCommentary"
+    },
+    "Choose only one": {
+        "commentaryComponent": "WeedSonCommentary"
+    },
+    "Are you currently subbed to Pokelawls?": {
+        "commentaryComponent": "SubsCommentary"
     },
     "How do you discover that Poke is live? Check all that apply": {
-        "multipleChoice": true
+        "multipleChoice": true,
+        "commentaryComponent": "NotificationsCommentary"
     },
     "How do you watch Poke? Check all that apply.": {
         "multipleChoice": true
     },
+    "How important is more WoW content? Rated 1 -5": {
+        "commentaryComponent": "WoWCommentary"
+    },
+    "How important are League / MOBA games? Rated 1 - 5": {
+        "commentaryComponent": "MobaCommentary"
+    },
     "What aspects of Poke and his stream do you enjoy the most?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "StreamEnjoymentCommentary"
     },
     "What content do you want to see more of in the future of this channel?": {
         "type": "word-cloud"

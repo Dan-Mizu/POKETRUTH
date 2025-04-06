@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // props
 const props = defineProps<{
+	question: string;
 	title: string;
 	description?: string;
 }>();
@@ -9,6 +10,7 @@ const props = defineProps<{
 <template>
 	<div class="w-full flex items-center justify-center flex-col gap-y-3">
 		<div
+			:id="question"
 			class="flex flex-col gap-y-1 text-center w-[50%] sm:w-[30rem] mx-10 whitespace-break-spaces"
 		>
 			<!-- title -->
