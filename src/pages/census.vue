@@ -91,6 +91,22 @@ onMounted(() => {
 		charts.value.forEach((chart) => observer.observe(chart));
 	});
 });
+
+// gag
+let gagActive: Ref<boolean | null> = ref(null);
+function clickedGagButton() {
+	// activate gag
+	gagActive.value = true;
+
+	// play sound
+	let sound = new Audio("/audio/meme/wajaja.ogg");
+	sound.volume = 0.2;
+	sound.addEventListener("ended", (event) => {
+		// end gag
+		gagActive.value = false;
+	});
+	sound.play();
+}
 </script>
 
 <template>
@@ -182,6 +198,21 @@ onMounted(() => {
 	>
 		<!-- filter button -->
 		<div class="h-10 text-white flex gap-x-1 items-center justify-center">
+			<!-- BAN RESPONDERS FROM CHAT gag button -->
+			<button
+				v-if="gagActive === null"
+				@click="clickedGagButton"
+				class="h-full min-w-12 px-2 pt-[0.4rem] rounded-full bg-red-500 hover:bg-red-400 font-bold flex gap-x-1"
+			>
+				<NuxtIcon
+					name="solar:sledgehammer-bold"
+					class="h-6 w-6 mt-[0.05rem]"
+				/>
+				<span class="h-full pr-2 whitespace-nowrap overflow-ellipsis">
+					BAN RESPONDERS FROM CHAT
+				</span>
+			</button>
+
 			<!-- icon and filtering answer -->
 			<button
 				@click="scrollToQuestion(activeFilter?.questionKey as string)"
@@ -209,6 +240,15 @@ onMounted(() => {
 				/>
 			</button>
 		</div>
+	</div>
+
+	<!-- gag -->
+	<div
+		v-if="gagActive"
+		class="z-20 fixed top-0 left-0 w-screen h-screen flex items-center justify-center px-10"
+	>
+		<!-- image -->
+		<NuxtImg src="images/wajaja.png" class="h-[80%]" draggable="false" />
 	</div>
 </template>
 
