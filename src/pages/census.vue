@@ -182,15 +182,6 @@ async function clickedGagButton() {
 					class="chart-container fade-in"
 					ref="charts"
 				>
-					<!-- commentary -->
-					<component
-						v-if="chartMeta.commentaryComponent"
-						:is="
-							commentaryComponents[chartMeta.commentaryComponent]
-						"
-						class="pb-10"
-					/>
-
 					<!-- chart -->
 					<BarChart
 						v-if="chartMeta.type === 'bar'"
@@ -229,6 +220,15 @@ async function clickedGagButton() {
 						:data="filteredData"
 						:multipleChoice="chartConfig[question]?.multipleChoice"
 						@filter="filterData"
+					/>
+
+					<!-- commentary -->
+					<component
+						v-if="chartMeta.commentaryComponent"
+						:is="
+							commentaryComponents[chartMeta.commentaryComponent]
+						"
+						class="pb-10"
 					/>
 				</div>
 			</template>
