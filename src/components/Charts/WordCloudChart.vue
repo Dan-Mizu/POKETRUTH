@@ -30,7 +30,6 @@ const chartData = computed(() => {
 	if (!props.data.length) return [];
 
 	const counts: Record<string, number> = {};
-	let totalValidResponses = 0;
 
 	props.data.forEach((entry) => {
 		let answer = entry[props.question];
@@ -59,24 +58,24 @@ const chartData = computed(() => {
 			answerArray.forEach((answer) => {
 				counts[answer] = (counts[answer] || 0) + 1;
 			});
-			totalValidResponses++;
 		}
 	});
 
-	// store answer count
-	answerCount.value = totalValidResponses;
-
 	// convert to required format and capitalize the first letter of each word
-	return (
-		Object.entries(counts)
-			.map(([name, value]) => ({
-				// capitalize first letter
-				name: name.charAt(0).toUpperCase() + name.slice(1),
-				value,
-			}))
-			// filter out words with fewer than 2 submissions
-			.filter((word) => word.value >= 2)
+	const filteredData = Object.entries(counts)
+		.map(([name, value]) => ({
+			name: name.charAt(0).toUpperCase() + name.slice(1),
+			value,
+		}))
+		.filter((word) => word.value >= 2);
+
+	// count only the answers being shown
+	answerCount.value = filteredData.reduce(
+		(sum, entry) => sum + entry.value,
+		0
 	);
+
+	return filteredData;
 });
 
 // chart settings
@@ -127,7 +126,11 @@ const onChartClick = (params: any) => {
 </script>
 
 <template>
-	<ChartWrapper :question :title="question" :description="`${answerCount} answered.`">
+	<ChartWrapper
+		:question
+		:title="question"
+		:description="`${answerCount} answered.`"
+	>
 		<VChart :option @click="onChartClick" />
 	</ChartWrapper>
 </template>

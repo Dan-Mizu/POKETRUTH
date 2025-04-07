@@ -48,6 +48,7 @@
         "type": "europe-map"
     },
     "Do you have any pets?": {
+        "type": "word-cloud",
         "multipleChoice": true,
         "commentaryComponent": "PetsCommentary"
     },

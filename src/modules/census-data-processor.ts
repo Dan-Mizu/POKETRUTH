@@ -74,9 +74,6 @@ export default defineNuxtModule({
 			// initialize object
 			chartTypes[question] = {};
 
-			// init amount of unique answers
-			let uniqueAnswers: Set<string | number>;
-
 			// pass through set settings
 			if (config) {
 				chartTypes[question] = config;
@@ -88,31 +85,8 @@ export default defineNuxtModule({
 				}
 			}
 
-			// automatically set chart type
-
-			// is set to multiple choice
-			if (config && config.multipleChoice) {
-				// count unique answers
-				uniqueAnswers = new Set(
-					censusData.flatMap((d) =>
-						typeof d[question] === "string"
-							? d[question]
-									?.split(",")
-									.map((ans) => ans.trim()) ?? []
-							: []
-					)
-				);
-			}
-
-			// fallback to default logic
-			else uniqueAnswers = new Set(censusData.map((d) => d[question]));
-
-			// determine chart by amount of unique answers
-			if (uniqueAnswers.size >= 12) {
-				chartTypes[question].type = "bar";
-			} else {
-				chartTypes[question].type = "pie";
-			}
+			// fallback to pie chart
+			chartTypes[question].type = "pie";
 		});
 
 		// ensure directory exists, then save data as json file
