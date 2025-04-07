@@ -120,39 +120,44 @@
         "commentaryComponent": "StreamEnjoymentCommentary"
     },
     "What content do you want to see more of in the future of this channel?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FutureContentCommentary"
     },
     "When making music content, is there a specifc genre you like seeing Poke experiment with? Any new genres that you think would make for a entertaining stream?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "MusicContentCommentary"
     },
     "Excluding Poke, Gigi and ekoP; who is your favorite twitch streamer?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FavoriteStreamerCommentary"
     },
     "What game do you most want to see Poke play in the future?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FutureGamesCommentary"
     },
     "Who do you most want to see collab with Poke in the future?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "CollabCommentary"
     },
     "What is your favorite emote on Twitch? 7tv, BTTV, FFZ are included": {
         "type": "word-cloud"
     },
     "What is your favorite video game of all time?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FavoriteGameCommentary"
     },
     "What is your favorite movie of all time?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FavoriteMovieCommentary"
     },
     "Who are your favorite music artists / bands?": {
-        "type": "word-cloud"
+        "type": "word-cloud",
+        "commentaryComponent": "FavoriteMusicCommentary"
     },
     "What is your favorite album of all time?": {
         "type": "word-cloud"
     },
     "What is your favorite food?": {
-        "type": "word-cloud"
-    },
-    "If you have any suggestions for improvements to the Census in following years please feel free to give that feedback here. ": {
         "type": "word-cloud"
     }
 }
