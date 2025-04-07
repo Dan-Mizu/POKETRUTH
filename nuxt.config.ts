@@ -72,11 +72,13 @@ export default defineNuxtConfig({
 	],
 
 	modules: [
+		'~/modules/census-data-processor.ts',
 		"@nuxt/ui",
 		"@nuxtjs/google-fonts",
 		"@nuxt/icon",
 		"@nuxt/image",
 		"@nuxtjs/robots",
+		"nuxt-echarts",
 	],
 
 	googleFonts: {
@@ -89,6 +91,10 @@ export default defineNuxtConfig({
 
 	icon: {
 		componentName: "NuxtIcon",
+	},
+
+	echarts: {
+		ssr: true,
 	},
 
 	devtools: { enabled: true },

@@ -446,6 +446,7 @@ const updateCharacter = async () => {
 					<div class="flex gap-1 flex-wrap justify-center">
 						<div
 							v-for="eye in eyes"
+							:key="eye"
 							:class="[
 								'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
 								!options_active
@@ -455,7 +456,7 @@ const updateCharacter = async () => {
 							@click="() => (eye_type = eye)"
 						>
 							<NuxtImg
-								:src="`${cdnUrl}/${cdnAvatarPath}/eyes/${eye_type}/display.png`"
+								:src="`${cdnUrl}/${cdnAvatarPath}/eyes/${eye}/display.png`"
 							/>
 						</div>
 					</div>
@@ -477,6 +478,7 @@ const updateCharacter = async () => {
 
 							<div
 								v-for="(_item, key) in items"
+								:key="key"
 								:class="[
 									'w-20 h-20 flex items-center justify-center hover:bg-opacity-80 bg-gray-400 rounded-lg border-white border-[1px] select-none',
 									!options_active

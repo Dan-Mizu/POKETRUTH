@@ -1,3 +1,34 @@
+// census types
+interface CensusChartConfig {
+	[key: string]: {
+		type?:
+			| null
+			| "exclude"
+			| "bar"
+			| "pie"
+			| "rating"
+			| "word-cloud"
+			| "north-america-map"
+			| "europe-map";
+		multipleChoice?: boolean;
+		answerOrder?: string[];
+		commentaryComponent?: string;
+	};
+}
+
+type CensusChartTypes =
+	| null
+	| "bar"
+	| "pie"
+	| "rating"
+	| "word-cloud"
+	| "north-america-map"
+	| "europe-map";
+
+interface CensusSubmission {
+	[key: string]: string | number;
+}
+
 // twitch user data
 interface ITwitchUser {
 	id: string;
