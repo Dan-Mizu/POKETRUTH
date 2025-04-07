@@ -15,8 +15,7 @@ const commentaryComponents = Object.fromEntries(
 import type { InitOptions } from "nuxt-echarts/runtime/types";
 import WordCloudChart from "~/components/Charts/WordCloudChart.vue";
 const initOptions = computed<InitOptions>(() => ({
-	height: 600,
-	width: 900,
+	autoResize: true,
 	renderer: "canvas",
 	locale: "EN",
 }));
@@ -83,6 +82,7 @@ const scrollToQuestion = (question: string) => {
 const charts: Ref<HTMLElement[]> = ref([]);
 onMounted(() => {
 	nextTick(() => {
+		// observe each chart element
 		const observer = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry, index) => {
@@ -98,8 +98,6 @@ onMounted(() => {
 				threshold: 0.1, // fade-in the chart when 20% of it is in the viewport
 			}
 		);
-
-		// observe each chart element
 		charts.value.forEach((chart) => observer.observe(chart));
 	});
 });

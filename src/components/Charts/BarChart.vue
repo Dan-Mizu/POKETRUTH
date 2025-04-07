@@ -139,6 +139,6 @@ const onChartClick = (params: any) => {
 		:title="question"
 		:description="`${answerCount} answered.`"
 	>
-		<VChart :option @click="onChartClick" />
+		<VChart :option @click="onChartClick" class="w-[900px] h-[600px]" />
 	</ChartWrapper>
 </template>

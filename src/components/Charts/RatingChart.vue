@@ -86,7 +86,7 @@ const option = computed(() => {
 				position: "inside",
 				formatter: "{a}",
 			},
-			barWidth: "20%",
+			barWidth: "60%",
 		};
 	});
 
@@ -118,12 +118,19 @@ const option = computed(() => {
 			},
 		},
 		series,
+		grid: {
+			top: 0,
+			bottom: 0,
+		},
+		legend: {
+			show: false, // or position it tightly with `top: 0`
+		},
 	};
 });
 
 // filtering on click event
 const onChartClick = (params: any) => {
-	emit("filter", props.question, params.name);
+	emit("filter", props.question, params.seriesName);
 };
 </script>
 
@@ -151,7 +158,11 @@ const onChartClick = (params: any) => {
 				}}
 			</span>
 		</div>
-		<p>Average Rating</p>
-		<VChart :option="option" @click="onChartClick" />
+		<p class="pt-1 pb-6">Average Rating</p>
+		<VChart
+			:option="option"
+			@click="onChartClick"
+			class="w-[900px] h-[120px]"
+		/>
 	</ChartWrapper>
 </template>
