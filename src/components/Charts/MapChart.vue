@@ -24,11 +24,6 @@ const props = withDefaults(
 	}
 );
 
-// filter event
-const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string | number): void;
-}>();
-
 // refs
 const answerCount = ref(0);
 const cleanedToRawMap = ref<Record<string, Set<string | number>>>({});
@@ -153,7 +148,10 @@ const option = computed(() => {
 	};
 });
 
-// filtering on click
+// filtering on click event
+const emit = defineEmits<{
+	(event: "filter", questionKey: string, value: string | number): void;
+}>();
 const onChartClick = (params: { name: string }) => {
 	const cleaned = params.name;
 	const rawSet = cleanedToRawMap.value[cleaned];

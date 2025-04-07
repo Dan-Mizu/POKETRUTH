@@ -22,11 +22,6 @@ const props = defineProps<{
 	data: CensusSubmission[];
 }>();
 
-// filter event
-const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string | number): void;
-}>();
-
 // process data for the chart
 const chartData = computed(() => {
 	// no data provided
@@ -129,6 +124,9 @@ const option = computed(() => {
 });
 
 // filtering on click event
+const emit = defineEmits<{
+	(event: "filter", questionKey: string, value: string | number): void;
+}>();
 const onChartClick = (params: any) => {
 	emit("filter", props.question, params.seriesName);
 };

@@ -17,11 +17,6 @@ const props = withDefaults(
 	}
 );
 
-// filter event
-const emit = defineEmits<{
-	(event: "filter", questionKey: string, value: string | number): void;
-}>();
-
 // refs
 const answerCount = ref(0);
 
@@ -120,6 +115,9 @@ const option = computed(() => ({
 }));
 
 // filtering on click event
+const emit = defineEmits<{
+	(event: "filter", questionKey: string, value: string | number): void;
+}>();
 const onChartClick = (params: any) => {
 	emit("filter", props.question, params.name);
 };

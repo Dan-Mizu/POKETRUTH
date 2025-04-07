@@ -5,7 +5,7 @@ const modules = import.meta.glob("~/components/Commentary/*.vue", {
 });
 const commentaryComponents = Object.fromEntries(
 	Object.entries(modules).map(([path, mod]) => {
-		// Extract component name from file name
+		// extract component name from file name
 		const name = path.split("/").pop()?.replace(".vue", "") ?? "";
 		return [name, (mod as any).default];
 	})
@@ -28,8 +28,10 @@ import chartMeta from "~/public/data/census/2025-meta.json";
 const chartConfig: CensusChartConfig = chartMeta as CensusChartConfig;
 
 // cross filtering data
-const activeFilter: Ref<{ questionKey: string; value: string } | null> =
-	ref(null);
+const activeFilter: Ref<{
+	questionKey: string;
+	value: string | number;
+} | null> = ref(null);
 const filteredData = computed(() => {
 	// no filter
 	if (!activeFilter.value) return censusData;
@@ -38,13 +40,13 @@ const filteredData = computed(() => {
 	const { questionKey, value } = activeFilter.value;
 
 	// filter data
-	return censusData.filter((d) => {
-		const answer = d[questionKey];
+	return censusData.filter((row) => {
+		const answer = String(row[questionKey]);
 
 		// multiple-choice question, check if the selected value is in the answer
 		if (
-			chartConfig[questionKey]?.multipleChoice &&
-			typeof answer === "string"
+			typeof value === "string" &&
+			chartConfig[questionKey]?.multipleChoice
 		) {
 			const answersArray = answer.split(",").map((ans) => ans.trim());
 
