@@ -109,11 +109,82 @@
     "How do you watch Poke? Check all that apply.": {
         "multipleChoice": true
     },
+    "How important is streamer-chat interraction? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is having more consistency? Rated 1 -5": {
+        "type": "rating"
+    },
+    "How important are updated chat emotes? Rated 1 -5": {
+        "type": "rating"
+    },
+    "How important are new sub alerts? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is more community content? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are more collab streams? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is variety gaming? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is retro gaming content? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are future IRL streams? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is Japan content (maybe vlog style)? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is speed running content? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is finding new tech in games? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is music production? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are album reviews? Rated 1 - 5": {
+        "type": "rating"
+    },
     "How important is more WoW content? Rated 1 -5": {
-        "commentaryComponent": "WoWCommentary"
+        "commentaryComponent": "WoWCommentary",
+        "type": "rating"
+    },
+    "How important is a GTA RP return? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are competitive game streams? Rated  1 - 5": {
+        "type": "rating"
+    },
+    "How important are solo game streams? Rated  1 - 5": {
+        "type": "rating"
+    },
+    "How important are co-op game streams? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are more viewer contests? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important are more community game servers? Rated  1 - 5": {
+        "type": "rating"
+    },
+    "How important are more horror game streams? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important do you consider political talk? Rated 1 - 5": {
+        "type": "rating"
+    },
+    "How important is world events talk? Rated 1 - 5 ": {
+        "type": "rating"
     },
     "How important are League / MOBA games? Rated 1 - 5": {
-        "commentaryComponent": "MobaCommentary"
+        "commentaryComponent": "MobaCommentary",
+        "type": "rating"
     },
     "What aspects of Poke and his stream do you enjoy the most?": {
         "type": "word-cloud",

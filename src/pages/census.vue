@@ -130,14 +130,14 @@ async function clickedGagButton() {
 		<img src="/images/ppCircle.webp" draggable="false" />
 	</div>
 
-	<!-- charts -->
+	<!-- census data visualization -->
 	<div
 		v-show="charts.length > 0"
-		class="flex flex-col text-align-center items-center justify-center text-center gap-y-10 my-5"
+		class="w-full flex flex-col gap-y-10 items-center justify-center text-center text-align-center my-5 px-8 sm:px-32"
 	>
 		<!-- title -->
 		<div
-			class="flex flex-col items-center justify-center text-center pt-5 mx-32 gap-y-2"
+			class="flex flex-col gap-y-2 items-center justify-center text-center pt-5"
 		>
 			<span class="text-3xl sm:text-5xl text-gray-500 font-bold">
 				Pokelawls Census 2025
@@ -148,7 +148,7 @@ async function clickedGagButton() {
 		</div>
 
 		<!-- introduction -->
-		<div class="flex flex-col text-start text-xl gap-y-4 mx-32">
+		<div class="flex flex-col gap-y-4 text-start text-xl">
 			<p>
 				Thank you to everyone who responded to our first community
 				census.
@@ -170,16 +170,19 @@ async function clickedGagButton() {
 		<div class="h-20" />
 
 		<!-- charts -->
-		<div class="flex flex-shrink flex-col gap-y-20">
+		<div
+			class="w-full flex flex-col flex-shrink gap-y-20 items-center justify-center"
+		>
 			<!-- dynamically render charts based on chart type -->
 			<template
 				v-for="(chartMeta, question) in chartConfig"
 				:key="(question as string)"
+				class="w-full flex flex-col items-center justify-center"
 			>
 				<!-- fade in charts when in viewport, and ignore non-specified charts -->
 				<div
 					v-if="chartMeta.type"
-					class="chart-container fade-in"
+					class="w-full flex flex-col items-center justify-center text-center fade-in"
 					ref="charts"
 				>
 					<!-- chart -->
@@ -198,6 +201,12 @@ async function clickedGagButton() {
 						:multipleChoice="chartConfig[question]?.multipleChoice"
 						@filter="filterData"
 						:answerOrder="chartConfig[question]?.answerOrder"
+					/>
+					<RatingChart
+						v-else-if="chartMeta.type === 'rating'"
+						:question="(question as string)"
+						:data="filteredData"
+						@filter="filterData"
 					/>
 					<MapChart
 						v-else-if="
@@ -238,9 +247,7 @@ async function clickedGagButton() {
 		<div class="h-5" />
 
 		<!-- thanks -->
-		<div
-			class="flex flex-col text-start text-xl gap-y-8 mx-32 max-w-[42rem]"
-		>
+		<div class="flex flex-col text-start text-xl gap-y-8 max-w-[42rem]">
 			<p class="text-2xl"><strong>Thanks to:</strong></p>
 
 			<div class="grid grid-cols-3 gap-4">

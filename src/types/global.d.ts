@@ -6,6 +6,7 @@ interface CensusChartConfig {
 			| "exclude"
 			| "bar"
 			| "pie"
+			| "rating"
 			| "word-cloud"
 			| "north-america-map"
 			| "europe-map";
@@ -19,6 +20,7 @@ type CensusChartTypes =
 	| null
 	| "bar"
 	| "pie"
+	| "rating"
 	| "word-cloud"
 	| "north-america-map"
 	| "europe-map";
