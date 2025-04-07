@@ -88,7 +88,21 @@ const chartData = computed(() => processChartData());
 const option = computed(() => {
 	const values = chartData.value.map((entry) => entry.value);
 
-	// If no values, fallback to safe defaults
+	// fallback when no data
+	if (values.length === 0) {
+		return {
+			tooltip: { show: false },
+			visualMap: { show: false },
+			series: [
+				{
+					type: "map",
+					map: props.map,
+					data: [],
+				},
+			],
+		};
+	}
+
 	const rawMin = Math.min(...values);
 	const rawMax = Math.max(...values);
 
