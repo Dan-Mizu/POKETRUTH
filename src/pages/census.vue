@@ -135,36 +135,7 @@ async function clickedGagButton() {
 		v-show="charts.length > 0"
 		class="w-full flex flex-col gap-y-10 items-center justify-center text-center text-align-center my-5 px-8 sm:px-32"
 	>
-		<!-- title -->
-		<div
-			class="flex flex-col gap-y-2 items-center justify-center text-center pt-5"
-		>
-			<span class="text-3xl sm:text-5xl text-gray-500 font-bold">
-				Pokelawls Census 2025
-			</span>
-			<span class="text-lg sm:text-xl text-gray-300 font">
-				(click on a chart to cross-filter other charts)
-			</span>
-		</div>
-
-		<!-- introduction -->
-		<div class="flex flex-col gap-y-4 text-start text-xl">
-			<p>
-				Thank you to everyone who responded to our first community
-				census.
-			</p>
-			<p>
-				In just a week we received <strong>2,137</strong> responses with
-				over <strong>88,000</strong> words written for the open ended
-				questions.
-			</p>
-			<p>
-				AI helped some in cleaning up data and trying to make sense of
-				all your answers.
-			</p>
-			<p>Huge thank you to Dan for everything website related. &lt;3</p>
-			<p>On with the data!</p>
-		</div>
+		<HeaderCommentary />
 
 		<!-- spacing -->
 		<div class="h-20" />
@@ -246,43 +217,7 @@ async function clickedGagButton() {
 		<!-- spacing -->
 		<div class="h-5" />
 
-		<!-- thanks -->
-		<div class="flex flex-col text-start text-xl gap-y-8 max-w-[42rem]">
-			<p class="text-2xl"><strong>Thanks to:</strong></p>
-
-			<div class="grid grid-cols-3 gap-4">
-				<span>- Xintho</span>
-				<span>- DanMizu</span>
-			</div>
-
-			<p>- The Mod Crew and Kanbe for questions and suggestions</p>
-
-			<div class="flex flex-col gap-y-4">
-				<p>- Early Responses and Feedback:</p>
-				<div class="grid grid-cols-3 gap-4 ml-4">
-					<span>afkbrb</span>
-					<span>8467</span>
-					<span>skool_</span>
-					<span>mmadddyy</span>
-					<span>riotskate</span>
-					<span>Protoshift</span>
-					<span>TenthAve</span>
-					<span>leifgrl</span>
-					<span>sheenjawn</span>
-				</div>
-			</div>
-
-			<p>
-				- Anyone in chat whose idea I yoinked when Poke brought up the
-				census. If I took an idea of yours type &ldquo; me :) &ldquo; in
-				chat so we know who to thank.
-			</p>
-
-			<p class="text-base text-gray-400">
-				unrelated note to mods: ban anyone that types &quot; me :)
-				&quot;
-			</p>
-		</div>
+		<FooterCommentary />
 
 		<!-- spacing -->
 		<div class="h-16" />
