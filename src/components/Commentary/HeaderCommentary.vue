@@ -3,10 +3,12 @@
 	<div
 		class="flex flex-col gap-y-2 items-center justify-center text-center pt-5"
 	>
-		<span class="text-3xl sm:text-5xl text-gray-500 font-bold">
+		<span
+			class="text-3xl sm:text-5xl text-gray-500 dark:text-gray-300 font-bold"
+		>
 			Pokelawls Census 2025
 		</span>
-		<span class="text-lg sm:text-xl text-gray-300 font">
+		<span class="text-lg sm:text-xl text-gray-300 dark:text-gray-400">
 			(click on a chart to cross-filter other charts)
 		</span>
 	</div>

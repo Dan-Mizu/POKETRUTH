@@ -72,10 +72,10 @@ export default defineNuxtConfig({
 	],
 
 	modules: [
-		'~/modules/census-data-processor.ts',
+		"~/modules/census-data-processor.ts",
 		"@nuxt/ui",
-		"@nuxtjs/google-fonts",
 		"@nuxt/icon",
+		"@nuxtjs/google-fonts",
 		"@nuxt/image",
 		"@nuxtjs/robots",
 		"nuxt-echarts",

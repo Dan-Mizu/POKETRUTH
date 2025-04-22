@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// dark mode
+const colorMode = useColorMode();
+
 // chart setup
 import { use } from "echarts/core";
 import { MapChart as EMapChart } from "echarts/charts";
@@ -137,7 +140,10 @@ const option = computed(() => {
 				],
 			},
 			outOfRange: {
-				color: "#ffffff", // white for missing states
+				color: colorMode.value === "dark" ? "#292524" : "#0b3d91",
+			},
+			textStyle: {
+				color: colorMode.value === "dark" ? "white" : "black",
 			},
 			text: ["High", "Low"],
 			calculable: true,
@@ -150,13 +156,10 @@ const option = computed(() => {
 				map: props.map,
 				emphasis: {
 					label: {
-						show: true,
+						show: false,
 					},
 				},
 				data: chartData.value,
-				itemStyle: {
-					borderColor: "#aaa",
-				},
 			},
 		],
 	};

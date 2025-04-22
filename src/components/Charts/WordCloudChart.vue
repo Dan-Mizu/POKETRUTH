@@ -1,5 +1,8 @@
 <script setup lang="ts">
-// // chart setup
+// dark mode
+const colorMode = useColorMode();
+
+// chart setup
 import { use } from "echarts/core";
 import { TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
@@ -98,9 +101,17 @@ const option = computed(() => ({
 				fontFamily: "sans-serif",
 				fontWeight: "bold",
 				color: () =>
-					`rgb(${Math.round(Math.random() * 160)}, ${Math.round(
-						Math.random() * 160
-					)}, ${Math.round(Math.random() * 160)})`,
+					colorMode.value === "dark"
+						? // dark mode, lighter colors
+						  `rgb(${Math.round(
+								160 + Math.random() * 95
+						  )}, ${Math.round(
+								160 + Math.random() * 95
+						  )}, ${Math.round(160 + Math.random() * 95)})`
+						: // normal, light mode colors
+						  `rgb(${Math.round(Math.random() * 160)}, ${Math.round(
+								Math.random() * 160
+						  )}, ${Math.round(Math.random() * 160)})`,
 			},
 			emphasis: {
 				focus: "self",
@@ -109,7 +120,7 @@ const option = computed(() => ({
 					textShadowColor: "#333",
 				},
 			},
-			data: chartData.value.filter((word) => word.value >= 2), // Corrected data structure
+			data: chartData.value.filter((word) => word.value >= 2), // corrected data structure
 		},
 	],
 }));
@@ -121,6 +132,12 @@ const emit = defineEmits<{
 const onChartClick = (params: any) => {
 	emit("filter", props.question, params.name);
 };
+
+// update chart when color mode changes
+const chartKey = ref(0);
+watch(colorMode, () => {
+	chartKey.value++;
+});
 </script>
 
 <template>
@@ -129,6 +146,11 @@ const onChartClick = (params: any) => {
 		:title="question"
 		:description="`${answerCount} answered.`"
 	>
-		<VChart :option @click="onChartClick" class="w-[900px] h-[400px]" />
+		<VChart
+			:key="chartKey"
+			:option
+			@click="onChartClick"
+			class="w-[900px] h-[400px]"
+		/>
 	</ChartWrapper>
 </template>

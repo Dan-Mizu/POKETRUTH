@@ -130,11 +130,20 @@ async function clickedGagButton() {
 		<img src="/images/ppCircle.webp" draggable="false" />
 	</div>
 
+	<!-- top toolbar -->
+	<div
+		class="z-[11] fixed w-full bottom-3 sm:top-3 sm:bottom-auto flex sm:justify-end justify-left my-2 px-10"
+	>
+		<!-- dark mode button -->
+		<ToggleThemeButton />
+	</div>
+
 	<!-- census data visualization -->
 	<div
 		v-show="charts.length > 0"
 		class="w-full flex flex-col gap-y-10 items-center justify-center text-center text-align-center my-5 px-8 sm:px-32"
 	>
+		<!-- header commentary -->
 		<HeaderCommentary />
 
 		<!-- spacing -->
@@ -156,7 +165,7 @@ async function clickedGagButton() {
 					class="w-full flex flex-col items-center justify-center text-center fade-in"
 					ref="charts"
 				>
-					<!-- chart -->
+					<!-- chart (shows one of the following) -->
 					<BarChart
 						v-if="chartMeta.type === 'bar'"
 						:question="(question as string)"
@@ -202,7 +211,7 @@ async function clickedGagButton() {
 						@filter="filterData"
 					/>
 
-					<!-- commentary -->
+					<!-- chart commentary -->
 					<component
 						v-if="chartMeta.commentaryComponent"
 						:is="
@@ -217,10 +226,20 @@ async function clickedGagButton() {
 		<!-- spacing -->
 		<div class="h-5" />
 
+		<!-- footer commentary -->
 		<FooterCommentary />
 
 		<!-- spacing -->
 		<div class="h-16" />
+	</div>
+
+	<!-- gag -->
+	<div
+		v-show="gagActive"
+		class="z-20 fixed top-0 left-0 w-screen h-screen flex items-center justify-center px-10"
+	>
+		<!-- image -->
+		<NuxtImg src="images/wajaja.png" class="h-[80%]" draggable="false" />
 	</div>
 
 	<!-- tool bar -->
@@ -264,23 +283,14 @@ async function clickedGagButton() {
 			<button
 				@click="activeFilter = null"
 				title="Remove Filter"
-				class="h-[80%] aspect-square rounded-full bg-gray-500 hover:bg-gray-400 flex items-center justify-center"
+				class="h-[80%] aspect-square rounded-full bg-gray-500 dark:bg-gray-100 hover:bg-gray-400 flex items-center justify-center"
 			>
 				<NuxtIcon
 					name="material-symbols:close-small-rounded"
-					class="h-6 w-6"
+					class="h-6 w-6 dark:text-gray-500"
 				/>
 			</button>
 		</div>
-	</div>
-
-	<!-- gag -->
-	<div
-		v-show="gagActive"
-		class="z-20 fixed top-0 left-0 w-screen h-screen flex items-center justify-center px-10"
-	>
-		<!-- image -->
-		<NuxtImg src="images/wajaja.png" class="h-[80%]" draggable="false" />
 	</div>
 </template>
 
@@ -290,7 +300,7 @@ html {
 }
 
 body {
-	@apply bg-white text-gray-500;
+	@apply bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-300 transition-colors;
 }
 
 .fade-in {

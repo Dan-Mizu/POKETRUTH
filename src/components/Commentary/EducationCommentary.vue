@@ -69,11 +69,11 @@ table tr:last-child td:last-child {
 /* cells */
 td,
 th {
-	@apply text-left border p-2;
+	@apply text-left border p-2 border-gray-200 dark:border-gray-700;
 }
 
 /* alternating background for readability */
 tr:nth-child(even) {
-	@apply bg-gray-100;
+	@apply bg-gray-100 dark:bg-gray-900;
 }
 </style>

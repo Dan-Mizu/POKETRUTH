@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// dark mode
+const colorMode = useColorMode();
+
 // chart setup
 import { use } from "echarts/core";
 import { PieChart as EPieChart } from "echarts/charts";
@@ -88,18 +91,21 @@ const chartData = computed(() => {
 const option = computed(() => ({
 	tooltip: {
 		trigger: "item",
-		formatter: "{b}: {c} ({d}%)", // Adds labels to tooltips
+		formatter: "{b}: {c} ({d}%)",
 	},
 	legend: {
 		orient: "vertical",
 		right: 10,
 		top: "center",
+		textStyle: {
+			color: colorMode.value === "dark" ? "white" : "black",
+		},
 	},
 	series: [
 		{
 			name: props.question,
 			type: "pie",
-			radius: ["40%", "70%"], // Makes it a donut chart, adjust as needed
+			radius: ["40%", "70%"],
 			center: ["50%", "50%"],
 			data: chartData.value,
 			animation: true,
@@ -107,7 +113,9 @@ const option = computed(() => ({
 			label: {
 				show: true,
 				position: "outside",
-				formatter: "{b}: {c}", // Label format
+				formatter: "{b}: {c}",
+				color: colorMode.value === "dark" ? "white" : "black",
+				textShadowBlur: 0,
 			},
 			emphasis: {
 				label: {

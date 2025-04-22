@@ -14,11 +14,11 @@ const props = defineProps<{
 			class="flex flex-col gap-y-1 text-center w-[50%] sm:w-[30rem] mx-10 whitespace-break-spaces"
 		>
 			<!-- title -->
-			<span class="text-xl sm:text-2xl font-bold text-gray-500">
+			<span class="text-xl sm:text-2xl font-bold text-gray-500 dark:text-gray-300">
 				{{ title }}
 			</span>
 			<!-- description -->
-			<span class="text-base sm:text-lg text-gray-300">
+			<span class="text-base sm:text-lg text-gray-300 dark:text-gray-400">
 				{{ description }}
 			</span>
 		</div>
