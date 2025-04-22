@@ -32,6 +32,7 @@
 		"nuxt": "^3.16.2",
 		"nuxt-echarts": "^0.3.0",
 		"nuxt-og-image": "^3.0.8",
+		"nuxt-viewport": "^2.3.0",
 		"vue": "^3.5.13",
 		"vue-router": "^4.5.0"
 	},

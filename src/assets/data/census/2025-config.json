@@ -1,7 +1,4 @@
 {
-    "Timestamp": {
-        "type": "exclude"
-    },
     "How old are you?": {
         "commentaryComponent": "AgeCommentary"
     },

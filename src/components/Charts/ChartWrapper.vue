@@ -11,7 +11,7 @@ const props = defineProps<{
 	<div class="w-full flex flex-col gap-y-3 items-center justify-center">
 		<div
 			:id="question"
-			class="flex flex-col gap-y-1 text-center w-[50%] sm:w-[30rem] mx-10 whitespace-break-spaces"
+			class="flex flex-col gap-y-1 text-center w-[80%] sm:w-[30rem] mx-10 whitespace-break-spaces"
 		>
 			<!-- title -->
 			<span class="text-xl sm:text-2xl font-bold text-gray-500 dark:text-gray-300">

@@ -79,6 +79,7 @@ export default defineNuxtConfig({
 		"@nuxt/image",
 		"@nuxtjs/robots",
 		"nuxt-echarts",
+		"nuxt-viewport",
 	],
 
 	googleFonts: {

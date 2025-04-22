@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// get viewport size
+const viewport = useViewport();
+
 // auto import commentary components
 const modules = import.meta.glob("~/components/Commentary/*.vue", {
 	eager: true,
@@ -131,9 +134,7 @@ async function clickedGagButton() {
 	</div>
 
 	<!-- top toolbar -->
-	<div
-		class="z-[11] fixed w-full bottom-3 sm:top-3 sm:bottom-auto flex sm:justify-end justify-left my-2 px-10"
-	>
+	<div class="z-[11] fixed w-full top-3 flex justify-end my-2 sm:px-10 px-5">
 		<!-- dark mode button -->
 		<ToggleThemeButton />
 	</div>
@@ -141,7 +142,7 @@ async function clickedGagButton() {
 	<!-- census data visualization -->
 	<div
 		v-show="charts.length > 0"
-		class="w-full flex flex-col gap-y-10 items-center justify-center text-center text-align-center my-5 px-8 sm:px-32"
+		class="w-full flex flex-col gap-y-10 items-center justify-center text-center text-align-center my-5 px-8 sm:px-32 overflow-x-hidden"
 	>
 		<!-- header commentary -->
 		<HeaderCommentary />
@@ -217,7 +218,7 @@ async function clickedGagButton() {
 						:is="
 							commentaryComponents[chartMeta.commentaryComponent]
 						"
-						class="pb-10"
+						class="pb-10 w-full"
 					/>
 				</div>
 			</template>
@@ -245,13 +246,15 @@ async function clickedGagButton() {
 	<!-- tool bar -->
 	<div
 		v-show="activeFilter"
-		class="z-10 fixed w-full bottom-3 flex sm:justify-end justify-center px-10"
+		class="z-10 fixed w-full bottom-3 flex justify-end sm:px-10 px-5"
 	>
 		<!-- filter button -->
 		<div class="h-10 text-white flex gap-x-1 items-center justify-center">
 			<!-- BAN RESPONDERS FROM CHAT gag button -->
 			<button
-				v-if="gagActive === null"
+				v-if="
+					gagActive === null && viewport.isGreaterOrEquals('tablet')
+				"
 				@click="clickedGagButton"
 				class="h-full min-w-12 px-2 pt-[0.4rem] rounded-full bg-red-500 hover:bg-red-400 font-bold flex gap-x-1"
 			>
@@ -259,7 +262,9 @@ async function clickedGagButton() {
 					name="solar:sledgehammer-bold"
 					class="h-6 w-6 mt-[0.05rem]"
 				/>
-				<span class="h-full pr-2 whitespace-nowrap overflow-ellipsis">
+				<span
+					class="h-full pr-2 whitespace-nowrap overflow-ellipsis text-base"
+				>
 					BAN RESPONDERS FROM CHAT
 				</span>
 			</button>
@@ -274,7 +279,9 @@ async function clickedGagButton() {
 					name="material-symbols:filter-alt"
 					class="h-6 w-6 mt-[0.05rem]"
 				/>
-				<span class="h-full pr-2 whitespace-nowrap overflow-ellipsis">
+				<span
+					class="h-full pr-2 whitespace-nowrap overflow-ellipsis text-base"
+				>
 					{{ activeFilter?.value ? activeFilter?.value : "None" }}
 				</span>
 			</button>
@@ -283,7 +290,7 @@ async function clickedGagButton() {
 			<button
 				@click="activeFilter = null"
 				title="Remove Filter"
-				class="h-[80%] aspect-square rounded-full bg-gray-500 dark:bg-gray-100 hover:bg-gray-400 flex items-center justify-center"
+				class="sm:h-[80%] h-full aspect-square rounded-full bg-gray-500 dark:bg-gray-100 hover:bg-gray-400 flex items-center justify-center"
 			>
 				<NuxtIcon
 					name="material-symbols:close-small-rounded"

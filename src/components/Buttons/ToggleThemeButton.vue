@@ -13,6 +13,14 @@ const toggleDarkMode = () => {
 	// change global color mode preference
 	colorMode.preference = isDark.value ? "dark" : "light";
 };
+
+// update meta's theme data
+const { setThemeColorMeta } = useThemeColorMeta();
+watch(colorMode, () => {
+	// change color
+	if (colorMode.value === "dark") setThemeColorMeta("#292524");
+	else setThemeColorMeta("#ffffff");
+});
 </script>
 
 <template>

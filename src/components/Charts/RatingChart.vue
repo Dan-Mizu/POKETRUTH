@@ -130,6 +130,13 @@ const emit = defineEmits<{
 const onChartClick = (params: any) => {
 	emit("filter", props.question, params.seriesName);
 };
+
+// update chart when specific viewport size breakpoint reached
+const viewport = useViewport();
+const chartInstance = ref(0);
+watch(viewport.breakpoint, (newBreakpoint) => {
+	if (!newBreakpoint.includes("desktop")) chartInstance.value++;
+});
 </script>
 
 <template>
@@ -160,7 +167,11 @@ const onChartClick = (params: any) => {
 		<VChart
 			:option="option"
 			@click="onChartClick"
-			class="w-[900px] h-[120px]"
+			:class="[
+				viewport.isGreaterOrEquals('tablet')
+					? 'w-[900px] h-[120px]'
+					: 'w-screen h-[120px]',
+			]"
 		/>
 	</ChartWrapper>
 </template>

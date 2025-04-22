@@ -134,9 +134,9 @@ const onChartClick = (params: any) => {
 };
 
 // update chart when color mode changes
-const chartKey = ref(0);
+const chartInstance = ref(0);
 watch(colorMode, () => {
-	chartKey.value++;
+	chartInstance.value++;
 });
 </script>
 
@@ -147,7 +147,7 @@ watch(colorMode, () => {
 		:description="`${answerCount} answered.`"
 	>
 		<VChart
-			:key="chartKey"
+			:key="chartInstance"
 			:option
 			@click="onChartClick"
 			class="w-[900px] h-[400px]"
