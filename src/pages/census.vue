@@ -77,9 +77,12 @@ watch(
 
 // scroll to specific question on page
 const scrollToQuestion = (question: string) => {
+	// get question's element on page
 	const element = document.getElementById(question);
+
+	// scroll to provided question
 	if (element) {
-		element.scrollIntoView({ behavior: "smooth" });
+		element.scrollIntoView({ behavior: "smooth", block: "start" });
 	}
 };
 
